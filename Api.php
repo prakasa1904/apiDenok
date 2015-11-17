@@ -29,6 +29,7 @@ class Api extends CI_Controller {
 	}
 
 	public function post(){
+		// Data Post API
 		if( $this->input->post() ){
 			if ( $this->qm->addAset() )
 				echo json_encode( array(
