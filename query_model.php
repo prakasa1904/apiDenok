@@ -115,6 +115,7 @@ class Query_model extends CI_Model {
 	}*/
 		//fungsi untuk menambah data pegawai ke alam tabel dari form isian
   function addAset(){
+  	  $koordinat = $this->input->post('koordinat') ? $this->input->post('koordinat') : '0,0';
       $data = array(
       'kode_barang' => $this->input->post('kode'),
       'nama_barang' => $this->input->post('nama'),
@@ -122,7 +123,7 @@ class Query_model extends CI_Model {
       'tahun' => $this->input->post('tahun'),
       'harga_satuan' => $this->input->post('harga'),
       'sumber_dana' => $this->input->post('dana'),
-      'koordinat' => isset( $this->input->post('koordinat') ) ? $this->input->post('koordinat') : '', // Prakasa
+      'koordinat' => $koordinat, // Prakasa
       'kode_lokasi' => $this->input->post('ruang')
       );
       $this->db->insert('tbl_aset',$data);
