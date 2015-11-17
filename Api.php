@@ -20,14 +20,12 @@ class Api extends CI_Controller {
 	}
 
 	public function list_lokasi(){
-		if( $this->input->get() ){
-			$data = $this->qm->getLokasiAset();
+		if( $this->input->get('limit') )
+			$data = $this->qm->get_lokasi_apps( $this->input->get('limit') );
+		else
+			$data = $this->qm->get_lokasi_apps();
+			
 			echo '<pre>'; print_r($data);
-		}else{
-			echo json_encode( array(
-					'status' => '0',
-				) );
-		}
 	}
 
 	public function post(){
