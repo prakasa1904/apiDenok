@@ -25,7 +25,7 @@ class Api extends CI_Controller {
 		else
 			$data = $this->qm->get_lokasi_apps();
 			
-			echo '<pre>'; print_r($data);
+			echo json_encode( $data );
 	}
 
 	public function post(){
