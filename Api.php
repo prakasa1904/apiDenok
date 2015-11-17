@@ -16,28 +16,15 @@ class Api extends CI_Controller {
 
 	public function index()
 	{
-		show_404();
-	}
-
-	public function list_lokasi(){
-		if( $this->input->get() ){
-			$data = $this->qm->getLokasiAset();
-			echo '<pre>'; print_r($data);
-		}else{
-			echo json_encode( array(
-					'status' => '0',
-				) );
-		}
+		show_error404();
 	}
 
 	public function post(){
 		if( $this->input->post() ){
-			if ( $this->qm->addAset() )
-				echo json_encode( array(
-					'status' => '1',
-				) );
+
 		}else{
 			echo json_encode( array(
+					'error' => 'Access Denied',
 					'status' => '0',
 				) );
 		}
