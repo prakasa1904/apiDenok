@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">SIGMA IPB</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="appGeo">APLIKASI GEOTAGGING</string>
+    <string name="btnTambah">Tambah Aset</string>
+    <string name="btnPencarian">Pencarian Aset</string>
+
+    <string name="title_activity_tambah">Tambah</string>
+    <string name="kb_hint">Kode Barang</string>
+    <string name="nb_hint">Nama Barang</string>
+    <string name="mb_hint">Merek Barang</string>
+    <string name="tb_hint">Tahun Barang</string>
+    <string name="hsb_hint">Harga Satuan Barang</string>
+    <string name="sd_hint">Sumber Dana</string>
+    <string name="judul_spinner">Pilih Ruangan</string>
+    <string-array name="ruang_array">
+        <item>Mercury</item>
+    </string-array>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+    <string name="btnAmbilGambar">Ambil Gambar</string>
+    <string name="btnGallery">Gallery</string>
+    <string name="btnSimpan">Simpan</string>
+    <string name="title_activity_pencarian">Pencarian</string>
+</resources>
