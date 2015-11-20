@@ -1,99 +1,101 @@
 package com.dka.sigmaipb;
 
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
+import android.widget.ListAdapter;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-// Luar Libs
-import org.json.JSONObject;
+import com.dka.sigmaipb.jsonParser;
+
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.io.*;
-import java.net.*;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import com.dka.sigmaipb.KoneksiDB;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class Pencarian extends AppCompatActivity {
-
+    static String in_judul = "judul";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pencarian);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        TextView list = (TextView) findViewById(R.id.view_list);
+        //TextView list = (TextView) findViewById(R.id.view_list);
         setSupportActionBar(toolbar);
-
-        KoneksiDB connection = new KoneksiDB();
-        try {
-            list.setText(connection.getKoneksi());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        
+        // Data Json Here
+        //jsonParser data = new jsonParser();
+        //if(data.dataList() != null) {
+            //list.setText((CharSequence) data.dataList());
+        //}else {
+            //list.setText(null);
+        //}
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Tanpa Aksi", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
     }
-
     // Untuk panggil Data dari URL
-    protected void jSOnObject(){
-        URL url = null;
-        try {
-            url = new URL("http://172.20.10.4/SigmaIpb/api/list_lokasi?limit=5");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        HttpURLConnection urlConnection = null;
-        try {
-            urlConnection = (HttpURLConnection) url.openConnection();
-        } catch (IOException e) {
-            e.printStackTrace();
+    private class listLokasi extends AsyncTask<String, String, String> {
+        private ProgressDialog pDialog;
+        ArrayList<HashMap<String, String>> data_map = new ArrayList<HashMap<String, String>>();
+        @Override
+        protected void onPreExecute(){
+            super.onPreExecute();
+            pDialog = new ProgressDialog(Pencarian.this);
+            pDialog.setMessage("Sabar gan, masih ngambil data neh...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            pDialog.show();
         }
 
-        try{
-            if (urlConnection == null) throw new AssertionError();
-            urlConnection.setRequestMethod("GET");
-            urlConnection.setRequestProperty("Content-length", "0");
-            urlConnection.setUseCaches(false);
-            urlConnection.setAllowUserInteraction(false);
-            urlConnection.setConnectTimeout(200);
-            urlConnection.setReadTimeout(200);
-            urlConnection.connect();
+        protected String doInBackground(String... args){
+            jsonParser source = new jsonParser();
+            JSONObject data = source.dataListLokasi();
 
-            int status = urlConnection.getResponseCode();
-            if(status == 201 || status == 200){
-                BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                StringBuilder sb = new StringBuilder();
-                String line;
-                while((line = br.readLine()) != null) {
-                    sb.append(line + '\n');
+            try{
+                JSONArray str_json = data.getJSONArray("berita");
+                for(int i = 0; i < str_json.length(); i++){
+                    JSONObject ar = str_json.getJSONObject(i);
+                    HashMap<String, String> map = new HashMap<String, String>();
+                    String judul = ar.getString("title");
+
+                    map.put(in_judul, judul);
+                    data_map.add(map);
                 }
-                br.close();
-                String dataJson = sb.toString();
-                //JSONObject jObj = new JSONObject(dataJson);
+            }catch (JSONException e){
+                e.printStackTrace();
             }
+        }
 
-        } catch(MalformedURLException ex){
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex){
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            urlConnection.disconnect();
+        protected void onPostExecute(String file_url) {
+            pDialog.dismiss();
+            runOnUiThread(new Runnable() {
+                public ListAdapter listAdapter;
+
+                public void setListAdapter(ListAdapter listAdapter) {
+                    this.listAdapter = listAdapter;
+                }
+
+                public void run() {
+                    ListAdapter adapter = new SimpleAdapter(Pencarian.this, data_map,R.layout.activity_pencarian, new String[] { in_judul });
+                    setListAdapter(adapter);
+                }
+            }
         }
     }
-
 }
