@@ -1,9 +1,10 @@
 package com.dka.sigmaipb;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -24,16 +25,28 @@ public class Beranda extends AppCompatActivity {
         Button tambah = (Button) findViewById(R.id.btnTambah);
         Button pencarian = (Button) findViewById(R.id.btnPencarian);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
 
 
         tambah.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                Intent i = new Intent(Beranda.this, Tambah.class);
-                i.putExtra("pesan", "From Activity Beranda");
-                startActivity(i);
+                //Intent i = new Intent(Beranda.this, Tambah.class);
+                //i.putExtra("pesan", "From Activity Beranda");
+                //startActivity(i);
+                SharedPreferences prefs = getSharedPreferences("IPB", 0);
+                boolean hasCode = prefs.getBoolean("HAS_CODE", false);
+                Context context = Beranda.this;
+                Intent intent = null;
+
+                if(!hasCode){
+                    intent = new Intent(context, Tambah.class);
+                }else{
+                    intent = new Intent(context, Tambah.class);
+                }
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                (context).startActivity(intent);
             }
         });
 
@@ -42,7 +55,21 @@ public class Beranda extends AppCompatActivity {
                 // TODO Auto-generated method stub
                 Intent i = new Intent(Beranda.this, Pencarian.class);
                 i.putExtra("pesan", "From Activity Beranda");
+                i.putExtra(Settings.EXTRA_AUTHORITIES, new String[]{"com.dka.sigmaipb"});
                 startActivity(i);
+                //startActivity(new Intent(Settings.ACTION_ADD_ACCOUNT));
+                //SharedPreferences prefs = getSharedPreferences("IPB", 0);
+                //boolean hasCode = prefs.getBoolean("HAS_CODE", false);
+                //Context context = Beranda.this;
+                //Intent intent = null;
+
+                //if(!hasCode){
+                    //intent = new Intent(getApplicationContext(), Pencarian.class);
+                //}else{
+                    //intent = new Intent(getApplicationContext(), Pencarian.class);
+                //}
+                //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                //(context).startActivity(intent);
             }
         });
     }
