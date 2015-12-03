@@ -1,39 +1,54 @@
 package com.dka.sigmaipb;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 
-import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.Spinner;
 import android.view.View;
-import android.view.View.OnClickListener;
 
+import org.json.JSONObject;
 
-public class Tambah extends AppCompatActivity {
+public class Tambah extends AppCompatActivity{
 
     // Activity request codes
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
@@ -45,15 +60,20 @@ public class Tambah extends AppCompatActivity {
     private static final String IMAGE_DIRECTORY_NAME = "SIGMA IPB";
 
     private Uri fileUri; // file url to store image/video
+    private static final String JSON_URL = "http://192.168.43.173/info.php";
+    public ArrayList<String> dataForm = new ArrayList<String>();
 
     Spinner sp;
+    private ImageView imgPreview;
     private Button btnAmbilGambar;
     private Button btnGallery;
-    private ImageView imgPreview;
-    private Button btnSimpan;
+    private Button saveData;
     ProgressDialog progressBar;
     private int progressBarStatus = 0;
     private Handler progressBarHandler = new Handler();
+
+    // Post data
+    public EditText idData, namaData;
 
     private long fileSize = 0;
 
@@ -62,11 +82,12 @@ public class Tambah extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tambah);
 
+        imgPreview = (ImageView) findViewById(R.id.imgPreview);
+
         sp = (Spinner) findViewById(R.id.ruangan);
         btnAmbilGambar = (Button) findViewById(R.id.btnAmbilGambar);
         btnGallery = (Button) findViewById(R.id.btnGallery);
-        imgPreview = (ImageView) findViewById(R.id.imgPreview);
-        addListenerOnButton();
+        saveData = (Button) findViewById(R.id.saveData);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -75,130 +96,6 @@ public class Tambah extends AppCompatActivity {
         List<String> item = new ArrayList<String>();
         item.add("Ruang Baca");
         item.add("Ruang Lab 01");
-        item.add("R. Sekretaris Departemen");
-        item.add("R. Sidang I");
-        item.add("R. Sidang II");
-        item.add("R. Tamu");
-        item.add("R. Tata Usaha");
-        item.add("R. Teras lv.6");
-        item.add("Ruang Dosen 1 (AAM)");
-        item.add("Ruang Dosen 2 (ADN)");
-        item.add("Ruang Dosen 3 (BS)");
-        item.add("Ruang Dosen 4 (TM)");
-        item.add("Ruang Lab 02");
-        item.add("Ruang Dosen 5 (AHW)");
-        item.add("Ruang Dosen 6 (AS)");
-        item.add("Ruang Dosen 7 (KAN)");
-        item.add("Ruang Dosen 8 (BSI)");
-        item.add("Ruang Ketua Dept");
-        item.add("Ruang Lab. Kecil Dept");
-        item.add("Ruang Lab. Komputer");
-        item.add("Ruang Perpustakaan Dept");
-        item.add("Ruang Sekretariat Dept");
-        item.add("Ruang Sekretaris Dept");
-        item.add("Ruang Lab CI");
-        item.add("Ruang Sidang Kecil");
-        item.add("Ruang Sidang");
-        item.add("PERPUSTAKAAN BIOLOGI");
-        item.add("R. SEKRETARIAT DEPARTEMEN BIOLOGI");
-        item.add("RUANG ARSIP ");
-        item.add("RUANG ASISTEN & LABORAN (RUMAH PLASTIK)");
-        item.add("RUANG ASISTEN & PENANGGUNG JAWAB LAB");
-        item.add("RUANG ASISTEN & PENANGGUNG JAWAB LAB.");
-        item.add("RUANG ASISTEN");
-        item.add("RUANG CETAK & PERLENGKAPAN");
-        item.add("Ruang Lab NCC");
-        item.add("RUANG HERBARIUM & LAB. PENELITIAN TAKSONOMI TUMBUHAN");
-        item.add("RUANG KULIAH BIOLOGI 2");
-        item.add("RUANG LAB. PENDIDIKAN BIOLOGI 1");
-        item.add("RUANG LAB. PENDIDIKAN BIOLOGI 2");
-        item.add("RUANG LAB. PENDIDIKAN BIOLOGI 3");
-        item.add("RUANG LAB. PENDIDIKAN BIOLOGI 4");
-        item.add("RUANG LAB. PENDIDIKAN BIOLOGI 5");
-        item.add("RUANG LAB. PENDIDIKAN KULTUR JARINGAN");
-        item.add("RUANG LAB. PENELITIAN FISIOLOGI TUMBUHAN");
-        item.add("RUANG LAB. PENELITIAN FUNGSI HEWAN");
-        item.add("Ruang Lab SEINS");
-        item.add("RUANG LAB. PENELITIAN KULTUR JARINGAN");
-        item.add("RUANG LAB. PENELITIAN MIKOLOGI");
-        item.add("RUANG LAB. PENELITIAN MIKROBIOLOGI");
-        item.add("RUANG LAB. PENELITIAN MIKROBIOLOGI.");
-        item.add("RUANG LABORATORIUM TERPADU BIOLOGI");
-        item.add("RUANG MAHASISWA PASCA SARJANA BIOLOGI");
-        item.add("RUANG MIKROTEKNIK & LAB. PENELITIAN ANATOMI TUMBUHAN");
-        item.add("RUANG PERPUSTAKAAN BIOLOGI");
-        item.add("RUANG SEKRETARIAT DEPARTEMEN BIOLOGI");
-        item.add("RUANG SEKRETARIAT JURNAL HAYATI");
-        item.add("Ruang Sekdep");
-        item.add("RUANG SIDANG DEPARTEMEN BIOLOGI");
-        item.add("RUANG STAF & LAB. PENELITIAN EKOLOGI TUMBUHAN");
-        item.add("RUANG STAF BIOLOGI 1");
-        item.add("RUANG STAF BIOLOGI 2");
-        item.add("RUANG STAF BIOLOGI 3");
-        item.add("RUANG STAF BIOLOGI 4");
-        item.add("RUANG STAF BIOLOGI 4");
-        item.add("RUANG STAF BIOLOGI 5");
-        item.add("RUANG STAF BIOLOGI 5");
-        item.add("Koridor Lt.2");
-        item.add("Ruang Selasar");
-        item.add("Koridor Lt.3");
-        item.add("Ruang Dosen");
-        item.add("Ruang Dosen");
-        item.add("Ruang Kadep");
-        item.add("Ruang Lab. Komp. B");
-        item.add("Ruang Lab. Komp. A");
-        item.add("Ruang Perpustakaan");
-        item.add("Ruang Sekr.Dept.");
-        item.add("Ruang Seminar A");
-        item.add("Ruang Seminar B");
-        item.add("Ruang Seminar 1");
-        item.add("Ruang Seminar C");
-        item.add("Ruang Seminar D");
-        item.add("Ruang Server");
-        item.add("Ruang Sidang");
-        item.add("Ruang TU");
-        item.add("R. BAGIAN KEUANGAN");
-        item.add("R. BENGKEL FISIKA");
-        item.add("R. BENGKEL KAYU");
-        item.add("R. DOSEN - A");
-        item.add("R. DOSEN - B");
-        item.add("Ruang Server");
-        item.add("R. KA LAB DAN LAB MIKROKONTROLER");
-        item.add("R. KA LAB TPB FISIKA");
-        item.add("R. KETUA DEPARTEMEN");
-        item.add("R. KETUA LAB ELEKTRONIKA");
-        item.add("R. KOMDIK");
-        item.add("R. KORIDOR");
-        item.add("R. KULIAH - A");
-        item.add("R. KULIAH - B");
-        item.add("R. LAB BIOFISIKA");
-        item.add("R. LAB ELEKTRONIKA");
-        item.add("Ruang Sidang");
-        item.add("R. LAB FISIKA DASAR");
-        item.add("R. LAB FISIKA LANJUT");
-        item.add("R. LAB FISIKA TEORI");
-        item.add("R. LAB JARINGAN DAN SHOFTWARE KOMPUTER");
-        item.add("R. LAB KARAKTERISASI");
-        item.add("R. Lab Mikroprosessor dan Lab Material");
-        item.add("R. RAPAT");
-        item.add("R. SEKRETARIS DEPARTEMEN");
-        item.add("R. SIDANG");
-        item.add("R. TATA USAHA");
-        item.add("Ruang Bendahara");
-        item.add("Ruang Tamu");
-        item.add("R.  ANY HARDIANY");
-        item.add("R. Baca(C-17 A)");
-        item.add("R. Dimas Andrianto");
-        item.add("R. Dr. Hj Anna P Roswiem");
-        item.add("R. Dr. I Made Artika");
-        item.add("R. Dr. Laksmi Ambarsari");
-        item.add("R. Drs. Edy Djauhari PK.");
-        item.add("R. Iis Kadarsasih (R.Teknisi)(C-19) ");
-        item.add("R. Ir. H A.E Zaenal Hasan");
-        item.add("R. KETUA DEPARTEMEN");
-        item.add("Ruang Teknisi");
-        item.add("R. KOMISI PENDIDIKAN");
-
 
         // Untuk membuat adapter list ruangan
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(Tambah.this,android.R.layout.simple_spinner_dropdown_item,item);
@@ -209,16 +106,6 @@ public class Tambah extends AppCompatActivity {
         // Untuk menerapkan adapter pada spinner
         sp.setAdapter(adapter);
 
-        // Capture image button click event
-        btnAmbilGambar.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // capture picture
-                captureImage();
-            }
-        });
-
         // Checking camera availability
         if (!isDeviceSupportCamera()) {
             Toast.makeText(getApplicationContext(),
@@ -227,71 +114,36 @@ public class Tambah extends AppCompatActivity {
             // will close the app if the device does't have camera
             finish();
         }
-    }
 
-    public void addListenerOnButton() {
-
-        btnSimpan = (Button) findViewById(R.id.btnSimpan);
-        btnSimpan.setOnClickListener(
-                new OnClickListener() {
+        saveData.setOnClickListener(
+                new View.OnClickListener() {
 
                     @Override
-                    public void onClick(View v) {
-                        // prepare for a progress bar dialog
-                        progressBar = new ProgressDialog(v.getContext());
-                        progressBar.setCancelable(true);
-                        progressBar.setMessage("Proses Unggah ...");
-                        progressBar.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                        progressBar.setProgress(0);
-                        progressBar.setMax(100);
-                        progressBar.show();
+                    public void onClick(View arg0) {
+                        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                                .permitAll().build();
+                        StrictMode.setThreadPolicy(policy);
 
-                        //reset progress bar status
-                        progressBarStatus = 0;
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Tambah.this);
+                        alertDialogBuilder.setCancelable(false);
+                        alertDialogBuilder.setPositiveButton("OK",
+                            new DialogInterface.OnClickListener() {
 
-                        //reset filesize
-                        fileSize = 0;
+                                @Override
+                                public void onClick(DialogInterface dialog,int which) {
+                                    idData = (EditText) findViewById(R.id.kode_barang);
+                                    namaData = (EditText) findViewById(R.id.nama_barang);
 
-                        new Thread(new Runnable() {
-                            public void run() {
-                                while (progressBarStatus < 100) {
-                                    // process some tasks
-                                    progressBarStatus = doSomeTasks();
-                                    // your computer is too fast, sleep 1 second
-                                    try {
-                                        Thread.sleep(1000);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-
-                                    // Update the progress bar
-                                    progressBarHandler.post(new Runnable() {
-                                        public void run() {
-                                            progressBar.setProgress(progressBarStatus);
-                                        }
-                                    });
+                                    String valueId = idData.getText().toString();
+                                    dataForm.add(valueId);
+                                    String valueNama = namaData.getText().toString();
+                                    dataForm.add(valueNama);
+                                    addData(JSON_URL, dataForm);
                                 }
-
-                                // ok, file is downloaded,
-                                if (progressBarStatus >= 100) {
-
-                                    // sleep 2 seconds, so that you can see the 100%
-                                    try {
-                                        Thread.sleep(2000);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-
-                                    // close the progress bar dialog
-                                    progressBar.dismiss();
-                                }
-                            }
-                        }).start();
-
+                            });
+                        alertDialogBuilder.create().show();
                     }
-
                 });
-
     }
 
     // load image from gallery
@@ -474,4 +326,54 @@ public class Tambah extends AppCompatActivity {
         return mediaFile;
     }
 
+    private void addData(String url, final ArrayList arrayList) {
+        class addData extends AsyncTask<String, Void, String> {
+            ProgressDialog loading;
+            public ArrayList<String> arr = new ArrayList<String>();
+            public addData(ArrayList arrayList) {
+                arr = arrayList;
+            }
+
+            protected void onPreExecute() {
+                super.onPreExecute();
+                loading = ProgressDialog.show(Tambah.this, "Harap Tunggu...", null, true, true);
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                String uri = params[0];
+                try {
+                    URL url = new URL(uri);
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    con.setUseCaches(false);
+                    con.setDoInput(true);
+                    con.setDoOutput(true);
+
+                    StringBuffer requestParams = new StringBuffer();
+                    for (int i = 0; i < arr.size(); i++) {
+                        requestParams.append(URLEncoder.encode(String.valueOf(i), "UTF-8"));
+                        requestParams.append("=").append(URLEncoder.encode(arr.get(i), "UTF-8"));
+                        requestParams.append("&");
+                    }
+
+                    OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
+                    writer.write(requestParams.toString());
+                    writer.flush();
+                    new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    con.disconnect();
+                } catch (Exception ex) {
+                    return null;
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                loading.dismiss();
+            }
+        }
+        addData add = new addData(arrayList);
+        add.execute(url);
+    }
 }

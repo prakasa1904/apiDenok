@@ -144,6 +144,7 @@ public class Pencarian extends ListActivity{
                         map.put(in_penulis, penulis);
                         data_map.add(map);
                     }
+                    con.disconnect();
                 }catch(Exception ex){
                     return null;
                 }
