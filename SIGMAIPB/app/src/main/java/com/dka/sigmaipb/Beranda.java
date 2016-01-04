@@ -25,8 +25,8 @@ public class Beranda extends AppCompatActivity {
         Button tambah = (Button) findViewById(R.id.btnTambah);
         Button pencarian = (Button) findViewById(R.id.btnPencarian);
 
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
 
         tambah.setOnClickListener(new View.OnClickListener() {

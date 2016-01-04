@@ -13,14 +13,19 @@
     <string name="tb_hint">Tahun Barang</string>
     <string name="hsb_hint">Harga Satuan Barang</string>
     <string name="sd_hint">Sumber Dana</string>
+    <string name="ruang">Ruangan</string>
     <string name="judul_spinner">Pilih Ruangan</string>
+    <string name="pencarian_hint">Kata kunci</string>
     <string-array name="ruang_array">
         <item>Mercury</item>
     </string-array>
-    <string name="latitude">Latitude</string>
-    <string name="longitude">Longitude</string>
-    <string name="btnAmbilGambar">Ambil Gambar</string>
-    <string name="btnGallery">Gallery</string>
+    <string name="latitude_hint">Latitude</string>
+    <string name="longitude_hint">Longitude</string>
+    <string name="btnAmbilGambar">Ambil Foto</string>
+    <string name="preview">Preview</string>
     <string name="btnSimpan">Simpan</string>
+    <string name="btnCari">Cari</string>
     <string name="title_activity_pencarian">Pencarian</string>
+    <string name="title_activity_hasil_pencarian">Hasil Pencarian</string>
+    <string name="title_activity_ubah">Ubah</string>
 </resources>

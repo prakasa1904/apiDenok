@@ -31,46 +31,13 @@
         android:orientation="vertical"
         tools:showIn="@layout/activity_pencarian"
         tools:context="com.dka.sigmaipb.Pencarian">
-        <Spinner
-            android:id="@+id/pencarian"
+        <TextView
+            android:id="@+id/hasilnya"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/Widget.AppCompat.Spinner.Underlined"
+            android:layout_height="match_parent"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="58dp" />
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/title_cari"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/pencarian"
-            android:layout_alignParentStart="true"></android.support.design.widget.TextInputLayout>
-
-        <Button
-            android:id="@+id/btnCari"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/btnCari"
-            android:textColor="@color/white"
-            android:layout_below="@+id/cari"
-            android:layout_alignParentRight="true" />
-        <ListView
-            android:id="@+id/list_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/btnCari" />
-
-        <EditText
-            android:id="@+id/cari"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/pencarian_hint"
-            android:inputType="text"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@+id/pencarian"
-            android:layout_alignParentRight="true" />
+            android:layout_marginTop="51dp" />
     </RelativeLayout>
 <!--    <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
