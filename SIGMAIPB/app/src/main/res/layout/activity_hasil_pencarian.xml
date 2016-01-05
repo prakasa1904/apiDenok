@@ -29,15 +29,14 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
         android:orientation="vertical"
-        tools:showIn="@layout/activity_pencarian"
-        tools:context="com.dka.sigmaipb.Pencarian">
-        <TextView
-            android:id="@+id/hasilnya"
+        tools:showIn="@layout/activity_hasil_pencarian"
+        tools:context="com.dka.sigmaipb.Hasilpencarian">
+        <ListView
+            android:id="@+id/list_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="51dp" />
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/btnCari" />
     </RelativeLayout>
 <!--    <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
