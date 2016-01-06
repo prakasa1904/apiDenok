@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -24,11 +25,12 @@ import java.util.HashMap;
 
 
 public class Hasilpencarian extends AppCompatActivity{
-    static String in_judul = "nama_barang";
-    static String in_penulis = "merk_type";
+    private static String FINAL_URL = "";
+    static String in_nama = "nama_barang";
+    static String in_merk = "merk_type";
     JSONArray str_json = null;
     public ArrayList<HashMap<String, String>> data_map = new ArrayList<HashMap<String, String>>();
-    private static final String JSON_URL = "http://172.20.10.4/SigmaIpb/api/get_asset";
+    private static final String JSON_URL = "http://172.20.10.4/SigmaIpb/api/get_asset/1/10/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,10 +39,10 @@ public class Hasilpencarian extends AppCompatActivity{
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        TextView mTextview = (TextView) findViewById(R.id.hasilnya);
-
-        mTextview.setText(getIntent().getStringExtra("text"));
+        /* Create URL Search */
+        String key = getIntent().getStringExtra("key").toLowerCase().replace(" ", "_");
+        FINAL_URL = JSON_URL + key + "/" + getIntent().getStringExtra("text");
+        this.get_data_list(FINAL_URL); // final
     }
 
     @Override
@@ -98,10 +100,10 @@ public class Hasilpencarian extends AppCompatActivity{
                     for(int i = 0; i < str_json.length(); i++){
                         JSONObject ar = str_json.getJSONObject(i);
                         HashMap<String, String> map = new HashMap<String, String>();
-                        String penulis = ar.getString("nama_barang");
-                        String judul = ar.getString("merk_type");
-                        map.put(in_judul, judul);
-                        map.put(in_penulis, penulis);
+                        String nama = ar.getString("nama_barang");
+                        String merk = ar.getString("merk_type");
+                        map.put(in_nama, nama);
+                        map.put(in_merk, merk);
                         data_map.add(map);
                     }
                     con.disconnect();
@@ -117,10 +119,10 @@ public class Hasilpencarian extends AppCompatActivity{
                 loading.dismiss(); loading = null;
                 ListView lv = (ListView) findViewById(R.id.list_view);
 
-                String[] from = { in_judul, in_penulis };
-                int[] to = { R.id.nama_barang, R.id.merek_barang };
+                String[] from = { in_nama, in_merk };
+                int[] to = { R.id.nama_barang, R.id.merk_barang };
                 ListAdapter adapter = new SimpleAdapter(getApplicationContext(), data_map,
-                        R.layout.content_pencarian, from, to);
+                        R.layout.content_hasil_pencarian, from, to);
                 lv.setAdapter(adapter);
             }
         }

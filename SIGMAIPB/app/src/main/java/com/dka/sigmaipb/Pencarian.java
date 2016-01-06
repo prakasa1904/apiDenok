@@ -34,7 +34,7 @@ public class Pencarian extends AppCompatActivity{
     static String in_merk = "merk_type";
     JSONArray str_json = null;
     public ArrayList<HashMap<String, String>> data_map = new ArrayList<HashMap<String, String>>();
-    private static final String JSON_URL = "http://172.20.10.4/SigmaIpb/api/get_asset";
+    private static final String JSON_URL = "http://172.20.10.4/SigmaIpb/api/get_asset/1/10/";
 
     public List<String> list = new ArrayList<String>();
 
@@ -52,7 +52,7 @@ public class Pencarian extends AppCompatActivity{
         /* Proses pencarian */
         Spinner sp = (Spinner) findViewById(R.id.pencarian);
         list.add("Nama Barang");
-        list.add("Merk");
+        list.add("Merk Barang");
         list.add("Tahun");
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -66,11 +66,14 @@ public class Pencarian extends AppCompatActivity{
         button1.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
+                Spinner spinner = (Spinner)findViewById(R.id.pencarian);
+                String key = spinner.getSelectedItem().toString();
 
                 EditText editText = (EditText)findViewById(R.id.cari);
                 String text = editText.getText().toString();
 
                 Intent myIntent = new Intent(view.getContext(),Hasilpencarian.class);
+                myIntent.putExtra("key",key);
                 myIntent.putExtra("text",text);
                 startActivity(myIntent);
 
