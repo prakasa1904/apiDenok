@@ -12,21 +12,22 @@
     tools:context=".Beranda">
 
     <LinearLayout
+        android:id="@+id/linearLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
+        android:weightSum="1"
+        android:layout_marginTop="65dp"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:weightSum="1">
+        android:layout_alignParentStart="true">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
             android:gravity="center_horizontal"
             android:text="@string/app_name"
-            android:textSize="50dp"
+            android:textSize="60sp"
             android:textStyle="bold"
             android:textColor="@color/txt_font" />
 
@@ -36,27 +37,38 @@
             android:layout_marginTop="5dp"
             android:gravity="center_horizontal"
             android:text="@string/appGeo"
-            android:textSize="25dp"
+            android:textSize="30sp"
             android:textStyle="bold"
             android:textColor="@color/txt_font" />
-        
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_above="@+id/linearLayout3"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/linearLayout1">
+
         <ImageView
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:layout_marginTop="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:src="@drawable/ipb"
             android:scaleType="fitCenter" />
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/linearLayout">
+        android:layout_alignParentStart="true">
 
         <Button
             android:id="@+id/btnTambah"
@@ -68,7 +80,7 @@
             android:text="@string/btnTambah"
             android:textStyle="bold"
             android:textColor="@color/white"
-            android:onClick="Tambah Aset"
+
             android:state_pressed="true" />
         <Button
             android:id="@+id/btnPencarian"
@@ -81,5 +93,7 @@
             android:textColor="@color/white" />
 
     </LinearLayout>
+
+
 
 </RelativeLayout>
