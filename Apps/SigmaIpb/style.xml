@@ -1,0 +1,643 @@
+<StyledLayerDescriptor version="1.0.0"
+xsi:schemaLocation="http://www.opengis.net/sld 
+http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd"
+xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc"  
+xmlns:xlink="http://www.w3.org/1999/xlink" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<NamedLayer>
+<Name>lc_centralkalimantan2000_2009_finalgeo</Name>
+<UserStyle>
+<Title>A teal polygon style</Title>
+<FeatureTypeStyle>
+<Rule>
+<Title>teal polygon</Title>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#00cc33
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+
+<Rule>
+<Name>z000-2</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>H1</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#df382a
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-3</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>H1r</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer> 
+<Fill>
+<CssParameter name="fill">#e75739
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-4</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>H2</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#ef7747
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-5</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>H2r</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#f79656
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-6</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>Hti</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#fdb265
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-7</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter> 
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>Kc</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#fdc379
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-8</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>Kr</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#fdd482
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-9</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>Ks</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#fee5a1
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-10</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>Mv</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#fef6b5
+</CssParameter>
+</Fill>
+</PolygonSymbolizer> 
+</Rule>
+<Rule>
+<Name>z000-11</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>Rp</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#f6fbbc
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-8</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>Rr</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#e4f4b6
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-8</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>SMB</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#d2edb0
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-8</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>Sw</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill> 
+<CssParameter name="fill">#c1e5ab
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-8</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>Tb</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#afdea5
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-8</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>Tg</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#96cea7
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-8</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>X2</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#7bbbac
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-8</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>X3</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter> 
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#60a8b0
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-8</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>X5</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#4595b5
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+</FeatureTypeStyle>
+</UserStyle>
+</NamedLayer>
+</StyledLayerDescriptor>
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<StyledLayerDescriptor version="1.0.0"
+xsi:schemaLocation="http://www.opengis.net/sld 
+http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd"
+xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc"
+xmlns:xlink="http://www.w3.org/1999/xlink" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<NamedLayer>
+<Name>lc_centralkalimantan2000_2009_finalgeo</Name>
+<UserStyle>
+<Title>A teal polygon style</Title>
+<FeatureTypeStyle>
+<Rule>
+<Title>teal polygon</Title>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#00cc33
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-1</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>Br</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#d7191c 
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-2</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>H1</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#df382a
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-3</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>H1r</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#e75739
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-4</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>H2</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#ef7747
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-5</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName> 
+<ogc:Literal>H2r</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#f79656
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-6</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>Hti</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#fdb265
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-7</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>Kc</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#fdc379
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-8</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>Kr</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#fdd482
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-9</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>Ks</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#fee5a1
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-10</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>Mv</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#fef6b5
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-11</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>Rp</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#f6fbbc
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-8</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>Rr</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill> 
+<CssParameter name="fill">#e4f4b6
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-8</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>SMB</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#d2edb0
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-8</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>Sw</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#c1e5ab
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-8</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>Tb</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#afdea5
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-8</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>Tg</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter> 
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#96cea7
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-8</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>X2</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#7bbbac
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-8</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>X3</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#60a8b0
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+<Rule>
+<Name>z000-8</Name>
+<Title>Layer tahun 2000</Title>
+<ogc:Filter>
+<ogc:PropertyIsEqualTo>
+<ogc:PropertyName>z000</ogc:PropertyName>
+<ogc:Literal>X5</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+</ogc:Filter>
+<PolygonSymbolizer>
+<Fill>
+<CssParameter name="fill">#4595b5
+</CssParameter>
+</Fill>
+</PolygonSymbolizer>
+</Rule>
+</FeatureTypeStyle>
+</UserStyle>
+</NamedLayer>
+</StyledLayerDescriptor>

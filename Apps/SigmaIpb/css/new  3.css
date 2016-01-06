@@ -1,0 +1,30 @@
+#nav {
+  padding-top: 0px;
+  background: url(../images/b.jpg) no-repeat;
+}
+#nav ul {
+  margin: 0;
+  padding: 0;
+  height: 36px;
+  line-height: 36px;
+  border-left: 2px solid #9E9479;
+  background: bottom left url(../images/nav_lita.gif) repeat-x;
+}
+#nav li {
+  list-style: none;
+  float: left;
+  margin: 0;
+  padding: 0 10px;
+}
+#nav li.home {
+  background: bottom left url(../images/nav_drks.gif) repeat-x;
+  padding-left: 25px;
+}
+#nav a {
+  font: 16px "Times new roman", serif;
+  color: #FFE5C3;
+  text-decoration: none;
+}
+#nav a:hover {
+  color: #F2E7D6;
+}
