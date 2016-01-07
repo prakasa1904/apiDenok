@@ -4,15 +4,14 @@
     android:layout_height="wrap_content"
     android:padding="4dip"
     android:orientation="horizontal">
-    <!--<ImageView
+    <ImageView
         android:id="@+id/icon"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="6dip"
-        android:contentDescription="TODO"
-        android:src="@drawable/ipb" />-->
+        android:layout_marginRight="5px"
+        android:src="@drawable/img_default"/>
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
