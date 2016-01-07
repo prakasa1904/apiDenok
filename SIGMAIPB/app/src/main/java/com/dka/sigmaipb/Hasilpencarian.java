@@ -28,7 +28,7 @@ public class Hasilpencarian extends AppCompatActivity{
     private static String FINAL_URL = "";
     static String in_nama = "nama_barang";
     static String in_merk = "merk_type";
-    JSONArray str_json = null;
+    JSONArray str_json = null; String key, val = "";
     public ArrayList<HashMap<String, String>> data_map = new ArrayList<HashMap<String, String>>();
     private static final String JSON_URL = "http://172.20.10.4/SigmaIpb/api/get_asset/1/10/";
 
@@ -40,8 +40,9 @@ public class Hasilpencarian extends AppCompatActivity{
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         /* Create URL Search */
-        String key = getIntent().getStringExtra("key").toLowerCase().replace(" ", "_");
-        FINAL_URL = JSON_URL + key + "/" + getIntent().getStringExtra("text");
+        key = getIntent().getStringExtra("key").toLowerCase().replace(" ", "_");
+        val = getIntent().getStringExtra("text");
+        FINAL_URL = JSON_URL + key + "/" + val;
         this.get_data_list(FINAL_URL); // final
     }
 
