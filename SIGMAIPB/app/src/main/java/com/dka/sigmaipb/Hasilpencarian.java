@@ -7,43 +7,45 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
 public class Hasilpencarian extends AppCompatActivity{
-    private static String FINAL_URL = "";
+    String key, val = "";
     static String in_nama = "nama_barang";
     static String in_merk = "merk_type";
-    JSONArray str_json = null; String key, val = "";
-    public ArrayList<HashMap<String, String>> data_map = new ArrayList<HashMap<String, String>>();
-    private static final String JSON_URL = "http://172.20.10.4/SigmaIpb/api/get_asset/1/10/";
+    static String in_foto = "foto";
+    JSONArray str_json = null;
+
+    ArrayList<Data> dataList;
+    DataAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hasil_pencarian);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        /* Create URL Search */
+        dataList = new ArrayList<Data>();
         key = getIntent().getStringExtra("key").toLowerCase().replace(" ", "_");
         val = getIntent().getStringExtra("text");
-        FINAL_URL = JSON_URL + key + "/" + val;
-        this.get_data_list(FINAL_URL); // final
+        new getJSON().execute("http://172.20.10.4/SigmaIpb/api/get_asset/1/10/" + key + "/" + val);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        ListView listview = (ListView) findViewById(R.id.list_view);
+        adapter = new DataAdapter(getApplicationContext(), R.layout.content_pencarian, dataList);
+        listview.setAdapter(adapter);
     }
 
     @Override
@@ -68,66 +70,55 @@ public class Hasilpencarian extends AppCompatActivity{
         return super.onOptionsItemSelected(item);
     }
 
-    private void get_data_list(String url) {
-        class GetJSON extends AsyncTask<String, Void, String>{
-            ProgressDialog loading;
+    class getJSON extends AsyncTask<String, Void, Boolean>{
+        ProgressDialog loading;
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                loading = ProgressDialog.show(Hasilpencarian.this, "Mohon tunggu...",null,true,true);
-            }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loading = ProgressDialog.show(Hasilpencarian.this, "Mohon tunggu...",null,true,true);
+        }
 
-            @Override
-            protected String doInBackground(String... params) {
+        @Override
+        protected Boolean doInBackground(String... params) {
 
-                String uri = params[0];
+            String uri = params[0];
 
-                BufferedReader bufferedReader = null;
-                try {
-                    URL url = new URL(uri);
-                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                    StringBuilder sb = new StringBuilder();
+            BufferedReader bufferedReader = null;
+            try {
+                URL url = new URL(uri);
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                StringBuilder sb = new StringBuilder();
 
-                    bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
-                    String json = "";
-                    while((json = bufferedReader.readLine())!= null){
-                        sb.append(json);
-                    }
-                    json = sb.toString().trim();
-                    JSONObject jObj = new JSONObject(json);
-                    str_json = jObj.getJSONArray("data");
-                    for(int i = 0; i < str_json.length(); i++){
-                        JSONObject ar = str_json.getJSONObject(i);
-                        HashMap<String, String> map = new HashMap<String, String>();
-                        String nama = ar.getString("nama_barang");
-                        String merk = ar.getString("merk_type");
-                        map.put(in_nama, nama);
-                        map.put(in_merk, merk);
-                        data_map.add(map);
-                    }
-                    con.disconnect();
-                }catch(Exception ex){
-                    return null;
+                String json = "";
+                while((json = bufferedReader.readLine())!= null){
+                    sb.append(json);
                 }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-                loading.dismiss(); loading = null;
-                ListView lv = (ListView) findViewById(R.id.list_view);
-
-                String[] from = { in_nama, in_merk };
-                int[] to = { R.id.nama_barang, R.id.merk_barang };
-                ListAdapter adapter = new SimpleAdapter(getApplicationContext(), data_map,
-                        R.layout.content_hasil_pencarian, from, to);
-                lv.setAdapter(adapter);
+                json = sb.toString().trim();
+                JSONObject jObj = new JSONObject(json);
+                str_json = jObj.getJSONArray("data");
+                for(int i = 0; i < str_json.length(); i++){
+                    JSONObject ar = str_json.getJSONObject(i);
+                    Data data = new Data();
+                    data.setName(ar.getString(in_nama));
+                    data.setMerk(ar.getString(in_merk));
+                    data.setImage(ar.getString(in_foto));
+                    dataList.add(data);
+                }
+                con.disconnect();
+                return true;
+            }catch(Exception ex){
+                return false;
             }
         }
-        GetJSON gj = new GetJSON();
-        gj.execute(url);
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            loading.dismiss(); loading = null;
+            if(result == false)
+                Toast.makeText(getApplicationContext(), "Unable to fetch data from server", Toast.LENGTH_LONG).show();
+        }
     }
 }
