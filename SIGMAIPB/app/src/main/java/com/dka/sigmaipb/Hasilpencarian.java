@@ -1,12 +1,16 @@
 package com.dka.sigmaipb;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -44,8 +48,20 @@ public class Hasilpencarian extends AppCompatActivity{
         setSupportActionBar(toolbar);
 
         ListView listview = (ListView) findViewById(R.id.list_view);
-        adapter = new DataAdapter(getApplicationContext(), R.layout.content_pencarian, dataList);
+        adapter = new DataAdapter(getApplicationContext(), R.layout.content_hasil_pencarian, dataList);
         listview.setAdapter(adapter);
+
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.i("testy", "I Clicked on Row " + position + " and it worked!");
+                Intent myIntent = new Intent(view.getContext(), Ubah.class);
+                String offset = String.valueOf(position + 1);
+                myIntent.putExtra("offset", offset);
+                myIntent.putExtra("key", key);
+                myIntent.putExtra("text", val);
+                startActivity(myIntent);
+            }
+        });
     }
 
     @Override

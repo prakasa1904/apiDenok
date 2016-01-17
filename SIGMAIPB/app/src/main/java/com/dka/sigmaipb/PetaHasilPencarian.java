@@ -1,47 +1,151 @@
 package com.dka.sigmaipb;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-public class PetaHasilPencarian extends AppCompatActivity implements OnMapReadyCallback {
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import com.dka.sigmaipb.peta.MyMarker;
+
+public class PetaHasilPencarian extends AppCompatActivity {
+
+    private GoogleMap mMap;
+    private ArrayList<MyMarker> mMyMarkersArray = new ArrayList<MyMarker>();
+    private HashMap<Marker, MyMarker> mMarkersHashMap;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_peta_hasil_pencarian);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        // Initialize the HashMap for Markers and MyMarker object
+        mMarkersHashMap = new HashMap<Marker, MyMarker>();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // TODO Auto-generated method stub
-                Intent i = new Intent(PetaHasilPencarian.this, Hasilpencarian.class);
-                i.putExtra("pesan", "From Activity Main");
-                startActivity(i);
-            }
-        });
+        mMyMarkersArray.add(new MyMarker("Brasil", "icon1", Double.parseDouble("-28.5971788"), Double.parseDouble("-52.7309824")));
+        mMyMarkersArray.add(new MyMarker("United States", "icon2", Double.parseDouble("33.7266622"), Double.parseDouble("-87.1469829")));
+        mMyMarkersArray.add(new MyMarker("Canada", "icon3", Double.parseDouble("51.8917773"), Double.parseDouble("-86.0922954")));
+        mMyMarkersArray.add(new MyMarker("England", "icon4", Double.parseDouble("52.4435047"), Double.parseDouble("-3.4199249")));
+        mMyMarkersArray.add(new MyMarker("España", "icon5", Double.parseDouble("41.8728262"), Double.parseDouble("-0.2375882")));
+        mMyMarkersArray.add(new MyMarker("Portugal", "icon6", Double.parseDouble("40.8316649"), Double.parseDouble("-4.936009")));
+        mMyMarkersArray.add(new MyMarker("Deutschland", "icon7", Double.parseDouble("51.1642292"), Double.parseDouble("10.4541194")));
+        mMyMarkersArray.add(new MyMarker("Atlantic Ocean Dan Sebagainya", "icondefault", Double.parseDouble("-13.1294607"), Double.parseDouble("-19.9602353")));
+
+        setUpMap();
+
+        plotMarkers(mMyMarkersArray);
     }
 
-    @Override
-    public void onMapReady(GoogleMap map) {
-        // Create a LatLngBounds.
-        LatLngBounds IPB = new LatLngBounds(new LatLng(-6.558405, 106.725864), new LatLng(-6.557413, 106.733277));
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(IPB.getCenter(), 17));
+    private void plotMarkers(ArrayList<MyMarker> markers)
+    {
+        if(markers.size() > 0)
+        {
+            for (MyMarker myMarker : markers)
+            {
+
+                // Create user marker with custom icon and other options
+                MarkerOptions markerOption = new MarkerOptions().position(new LatLng(myMarker.getmLatitude(), myMarker.getmLongitude()));
+                //markerOption.icon(BitmapDescriptorFactory.fromResource(R.drawable.img_default));
+
+                Marker currentMarker = mMap.addMarker(markerOption);
+                mMarkersHashMap.put(currentMarker, myMarker);
+
+                mMap.setInfoWindowAdapter(new MarkerInfoWindowAdapter());
+            }
+        }
+    }
+
+    private int manageMarkerIcon(String markerIcon)
+    {
+        if (markerIcon.equals("icon1"))
+            return R.drawable.img_default;
+        else if(markerIcon.equals("icon2"))
+            return R.drawable.img_default;
+        else if(markerIcon.equals("icon3"))
+            return R.drawable.ipb;
+        else if(markerIcon.equals("icon4"))
+            return R.drawable.ipb;
+        else if(markerIcon.equals("icon5"))
+            return R.drawable.img_default;
+        else if(markerIcon.equals("icon6"))
+            return R.drawable.img_default;
+        else if(markerIcon.equals("icon7"))
+            return R.drawable.img_default;
+        else
+            return R.drawable.img_default;
+    }
+
+
+    private void setUpMap()
+    {
+        // Do a null check to confirm that we have not already instantiated the map.
+        if (mMap == null)
+        {
+            // Try to obtain the map from the SupportMapFragment.
+            mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+
+            // Check if we were successful in obtaining the map.
+
+            if (mMap != null)
+            {
+                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
+                {
+                    @Override
+                    public boolean onMarkerClick(com.google.android.gms.maps.model.Marker marker)
+                    {
+                        marker.showInfoWindow();
+                        return true;
+                    }
+                });
+            }
+            else
+                Toast.makeText(getApplicationContext(), "Unable to create Maps", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public class MarkerInfoWindowAdapter implements GoogleMap.InfoWindowAdapter
+    {
+        public MarkerInfoWindowAdapter()
+        {
+        }
+
+        @Override
+        public View getInfoWindow(Marker marker)
+        {
+            return null;
+        }
+
+        @Override
+        public View getInfoContents(Marker marker)
+        {
+            View v  = getLayoutInflater().inflate(R.layout.infomap, null);
+
+            MyMarker myMarker = mMarkersHashMap.get(marker);
+
+            ImageView markerIcon = (ImageView) v.findViewById(R.id.marker_icon);
+
+            TextView markerLabel = (TextView)v.findViewById(R.id.marker_label);
+
+            TextView anotherLabel = (TextView)v.findViewById(R.id.another_label);
+
+            markerIcon.setImageResource(manageMarkerIcon(myMarker.getmIcon()));
+
+            markerLabel.setText(myMarker.getmLabel());
+            anotherLabel.setText("Deskripsi aga panjang");
+
+            return v;
+        }
     }
 }

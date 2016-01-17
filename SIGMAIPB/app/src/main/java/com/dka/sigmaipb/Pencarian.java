@@ -1,14 +1,17 @@
 package com.dka.sigmaipb;
 
+import android.app.LauncherActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,9 +50,19 @@ public class Pencarian extends AppCompatActivity{
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ListView listview = (ListView) findViewById(R.id.list_view);
+        final ListView listview = (ListView) findViewById(R.id.list_view);
         adapter = new DataAdapter(getApplicationContext(), R.layout.content_pencarian, dataList);
         listview.setAdapter(adapter);
+
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.i("testy", "I Clicked on Row " + position + " and it worked!");
+                Intent myIntent = new Intent(view.getContext(), Ubah.class);
+                String offset = String.valueOf(position + 1);
+                myIntent.putExtra("offset", offset);
+                startActivity(myIntent);
+            }
+        });
 
         this.addListenerOnButton();
 
@@ -77,7 +90,7 @@ public class Pencarian extends AppCompatActivity{
                 EditText editText = (EditText) findViewById(R.id.cari);
                 String text = editText.getText().toString();
 
-                Intent myIntent = new Intent(view.getContext(), Hasilpencarian.class);
+                Intent myIntent = new Intent(view.getContext(), PetaHasilPencarian.class);
                 myIntent.putExtra("key", key);
                 myIntent.putExtra("text", text);
                 startActivity(myIntent);

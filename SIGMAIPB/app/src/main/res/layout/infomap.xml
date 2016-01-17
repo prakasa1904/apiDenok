@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/marker_layout"
+    android:orientation="vertical"
+    android:layout_width="200px"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/marker_icon"
+        android:layout_marginTop="15px"
+        android:layout_width="75dip"
+        android:layout_height="50dip"
+        android:layout_marginRight="30px"
+        android:scaleType="centerCrop"
+        android:src="@drawable/img_default" />
+    <LinearLayout
+        android:id="@+id/station_info_layout"
+        android:layout_width="175px"
+        android:layout_height="250px"
+        android:orientation="horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/marker_icon">
+        <TextView
+            android:id="@+id/marker_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/station_info_layout2"
+        android:layout_width="175px"
+        android:layout_height="250px"
+        android:orientation="horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/marker_icon">
+        <TextView
+            android:id="@+id/another_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:layout_marginTop="75px" />
+    </LinearLayout>
+</RelativeLayout>
