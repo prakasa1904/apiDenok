@@ -19,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,6 +27,10 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.dka.sigmaipb.cache.FileCache;
+import com.dka.sigmaipb.cache.MemoryCache;
+import com.dka.sigmaipb.cache.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,8 +44,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +67,6 @@ public class Ubah extends AppCompatActivity {
     private static final String JSON_URL = "http://172.20.10.4/SigmaIpb/api/edit";
     public ArrayList<String> dataForm = new ArrayList<String>();
 
-    Spinner sp;
     private TextView messageText;
     public ImageView imageview;
     private Button btnAmbilGambar;
@@ -69,13 +76,13 @@ public class Ubah extends AppCompatActivity {
     private TextView idData;
     private EditText kodeData, namaData, merkData, tahunData, hargaData, sumberData, latData, longData;
     private Spinner ruangData;
-
+    public String spinnerSelected = null;
     private long fileSize = 0;
 
     Exif exif;
 
     /* Key Data From Other Activity */
-    private String key, val = null;
+    private String key, val, offset = null;
 
     /* Data Spinner */
     JSONArray str_json = null;
@@ -89,7 +96,6 @@ public class Ubah extends AppCompatActivity {
         messageText  = (TextView)findViewById(R.id.messageText);
         imageview = (ImageView)findViewById(R.id.imgPreview);
 
-        sp = (Spinner) findViewById(R.id.ruangan);
         btnAmbilGambar = (Button) findViewById(R.id.btnAmbilGambar);
         saveData = (Button) findViewById(R.id.saveData);
 
@@ -109,15 +115,13 @@ public class Ubah extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        String offset = getIntent().getStringExtra("offset");
+        offset = getIntent().getStringExtra("offset");
         key = getIntent().getStringExtra("key");
         val = getIntent().getStringExtra("text");
         if(key == null && val == null)
             new setDataForm().execute("http://172.20.10.4/SigmaIpb/api/get_asset/" + offset +"/1/");
         else
             new setDataForm().execute("http://172.20.10.4/SigmaIpb/api/get_asset/" + offset + "/1/" + key + "/" + val);
-
-        this.get_list_lokasi(GET_URL);
 
         // Checking camera availability
         if (!isDeviceSupportCamera()) {
@@ -178,8 +182,8 @@ public class Ubah extends AppCompatActivity {
                                         //messageText.setText("uploading started.....");
                                         new Thread(new Runnable() {
                                             public void run() {
-                                                if(imagepath != null)
-                                                    uploadFileToServer(imagepath, JSON_URL, dataForm);
+                                                if(imagepath == null) imagepath = "false";
+                                                uploadFileToServer(imagepath, JSON_URL, dataForm);
                                             }
                                         }).start();
                                         finish();
@@ -228,7 +232,6 @@ public class Ubah extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Boolean result) {
-            loading.dismiss(); loading = null;
             if(result == false)
                 Toast.makeText(getApplicationContext(), "Unable to fetch data from server", Toast.LENGTH_LONG).show();
             else
@@ -236,6 +239,13 @@ public class Ubah extends AppCompatActivity {
                     JSONObject ar = null;
                     try {
                         ar = str_json.getJSONObject(i);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    /* SPINNER DATA SELECTED */
+                    try {
+                        spinnerSelected = ar.getString("kode_lokasi");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -298,7 +308,187 @@ public class Ubah extends AppCompatActivity {
                     }
                     latData.setText(latitude);
                     longData.setText(longitude);
+
+                    try {
+                        new DownloadImageTask(imageview).execute(ar.getString("foto"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
+            new GetListLokasi(spinnerSelected).execute(GET_URL);
+            loading.dismiss(); loading = null;
+        }
+
+        class GetListLokasi extends AsyncTask<String, Void, String> {
+            private String strValue = null;
+
+            public GetListLokasi (String str0) {
+                this.strValue = str0;
+            }
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+
+                String uri = params[0];
+
+                BufferedReader bufferedReader = null;
+                try {
+                    URL url = new URL(uri);
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    StringBuilder sb = new StringBuilder();
+
+                    bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+                    String json = "";
+                    while((json = bufferedReader.readLine())!= null){
+                        sb.append(json);
+                    }
+                    json = sb.toString().trim();
+                    JSONObject jObj = new JSONObject(json);
+                    str_json = jObj.getJSONArray("lokasi");
+                    for(int i = 0; i < str_json.length(); i++){
+                        JSONObject ar = str_json.getJSONObject(i);
+                        String id = ar.getString("kode");
+                        list.add(id);
+                    }
+                    con.disconnect();
+                }catch(Exception ex){
+                    return null;
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(Ubah.this, android.R.layout.simple_spinner_item, list);
+                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                ruangData.setAdapter(dataAdapter);
+
+                if ( ! this.strValue.equals(null) ){
+                    ruangData.setSelection(getIndex(ruangData, this.strValue));
+                }
+            }
+
+            private int getIndex(Spinner spinner,String value){
+                int index = 0;
+                for (int i = 0; i < spinner.getAdapter().getCount(); i++){
+                    String str1 = (String) spinner.getItemAtPosition(i);
+                    if( str1.toLowerCase().contains(value.toLowerCase()) ){
+                        index = i;
+                    }
+                }
+                return index;
+            }
+        }
+
+        private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+            ImageView bmImage;
+            FileCache fileCache;
+            MemoryCache memoryCache = new MemoryCache();
+
+            public DownloadImageTask(ImageView bmImage) {
+                this.bmImage = bmImage;
+                this.fileCache = new FileCache(Ubah.this);
+            }
+
+            protected Bitmap doInBackground(String... urls) {
+            /* Define URL */
+                String urldisplay = urls[0];
+
+                if( urldisplay.length() < 1 ){
+                    return null;
+                }else{
+                /* Check URL in file exist or NOT ! */
+                    File f = this.fileCache.getFile(urldisplay);
+
+                    Bitmap b = decodeFile(f);
+                    if(b != null) return b;
+                    else {
+                        try {
+                            Bitmap bitmap = null;
+                            URL uri = new URL(urldisplay);
+                            HttpURLConnection conn = (HttpURLConnection) uri.openConnection();
+                            conn.setConnectTimeout(30000);
+                            conn.setReadTimeout(30000);
+                            conn.setInstanceFollowRedirects(true);
+
+                        /* Check URL OK ? */
+                            int status = conn.getResponseCode();
+                            if(status == 200){
+                                InputStream is = conn.getInputStream();
+                                OutputStream os = new FileOutputStream(f);
+
+                            /* Write Bitmap and URL to Cache */
+                                Utils.CopyStream(is, os);
+
+                                bitmap = decodeFile(f);
+                                os.close();
+                                conn.disconnect();
+
+                                memoryCache.put(urldisplay, bitmap);
+
+                                return bitmap;
+                            }else{
+                                return null;
+                            }
+                        } catch (Exception e) {
+                            Log.e("Error Sigma Man ", e.getMessage());
+                            e.printStackTrace();
+                            return null;
+                        }
+                    }
+                }
+            }
+
+            protected void onPostExecute(Bitmap result) {
+                if( result != null ) this.bmImage.setImageBitmap(result);
+                else this.bmImage.setImageResource(R.drawable.img_default);
+            }
+
+            private Bitmap decodeFile(File f){
+                try {
+                    //Decode image size
+                    BitmapFactory.Options o = new BitmapFactory.Options();
+                    o.inJustDecodeBounds = true;
+                    FileInputStream stream1=new FileInputStream(f);
+                    BitmapFactory.decodeStream(stream1,null,o);
+                    stream1.close();
+
+                    //Find the correct scale value. It should be the power of 2.
+
+                    // Set width/height of recreated image
+                    final int REQUIRED_SIZE=85;
+
+                    int width_tmp=o.outWidth, height_tmp=o.outHeight;
+                    int scale=1;
+                    while(true){
+                        if(width_tmp/2 < REQUIRED_SIZE || height_tmp/2 < REQUIRED_SIZE)
+                            break;
+                        width_tmp/=2;
+                        height_tmp/=2;
+                        scale*=2;
+                    }
+
+                    //decode with current scale values
+                    BitmapFactory.Options o2 = new BitmapFactory.Options();
+                    o2.inSampleSize=scale;
+                    FileInputStream stream2=new FileInputStream(f);
+                    Bitmap bitmap=BitmapFactory.decodeStream(stream2, null, o2);
+                    stream2.close();
+                    return bitmap;
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
         }
     }
 
@@ -448,11 +638,8 @@ public class Ubah extends AppCompatActivity {
 
     public static String uploadFileToServer(String filename, String targetUrl, ArrayList<String> dataForm) {
         String response = "error";
-        HttpURLConnection connection = null;
-        DataOutputStream outputStream = null;
+        FileInputStream fileInputStream = null;
 
-        String pathToOurFile = filename;
-        String urlServer = targetUrl;
         String lineEnd = "\r\n";
         String twoHyphens = "--";
         String boundary = "*****";
@@ -460,12 +647,13 @@ public class Ubah extends AppCompatActivity {
         int bytesRead, bytesAvailable, bufferSize;
         byte[] buffer;
         int maxBufferSize = 1 * 1024;
-        try {
-            FileInputStream fileInputStream = new FileInputStream(new File(
-                    pathToOurFile));
 
-            URL url = new URL(urlServer);
-            connection = (HttpURLConnection) url.openConnection();
+        try {
+            if(filename != "false")
+                fileInputStream = new FileInputStream(new File(filename));
+
+            URL url = new URL(targetUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
             // Allow Inputs & Outputs
             connection.setDoInput(true);
@@ -479,7 +667,7 @@ public class Ubah extends AppCompatActivity {
             connection.setRequestProperty("Content-Type",
                     "multipart/form-data; boundary=" + boundary);
 
-            outputStream = new DataOutputStream(connection.getOutputStream());
+            DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
             outputStream.writeBytes(twoHyphens + boundary + lineEnd);
 
             ArrayList<String> keyForm = new ArrayList<String>();
@@ -503,69 +691,52 @@ public class Ubah extends AppCompatActivity {
                 ;
             }
 
-            /*String taskId = "anyvalue";
-            outputStream.writeBytes("Content-Disposition: form-data; name=\"TaskID\"" + lineEnd);
-            outputStream.writeBytes("Content-Type: text/plain;charset=UTF-8" + lineEnd);
-            outputStream.writeBytes("Content-Length: " + taskId.length() + lineEnd);
-            outputStream.writeBytes(lineEnd);
-            outputStream.writeBytes(taskId + lineEnd);
-            outputStream.writeBytes(twoHyphens + boundary + lineEnd);*/
+            if (fileInputStream != null) {
+                String connstr;
+                connstr = "Content-Disposition: form-data; name=\"UploadFile\";filename=\""
+                        + filename + "\"" + lineEnd;
 
-            String connstr = null;
-            connstr = "Content-Disposition: form-data; name=\"UploadFile\";filename=\""
-                    + pathToOurFile + "\"" + lineEnd;
+                outputStream.writeBytes(connstr);
+                outputStream.writeBytes(lineEnd);
 
-            outputStream.writeBytes(connstr);
-            outputStream.writeBytes(lineEnd);
+                bytesAvailable = fileInputStream.available();
+                bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                buffer = new byte[bufferSize];
 
-            bytesAvailable = fileInputStream.available();
-            bufferSize = Math.min(bytesAvailable, maxBufferSize);
-            buffer = new byte[bufferSize];
-
-            // Read file
-            bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-            System.out.println("Image length " + bytesAvailable + "");
-            try {
-                while (bytesRead > 0) {
-                    try {
-                        outputStream.write(buffer, 0, bufferSize);
-                    } catch (OutOfMemoryError e) {
-                        e.printStackTrace();
-                        response = "outofmemoryerror";
-                        return response;
+                // Read file
+                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+                System.out.println("Image length " + bytesAvailable + "");
+                try {
+                    while (bytesRead > 0) {
+                        try {
+                            outputStream.write(buffer, 0, bufferSize);
+                        } catch (OutOfMemoryError e) {
+                            e.printStackTrace();
+                            response = "outofmemoryerror";
+                            return response;
+                        }
+                        bytesAvailable = fileInputStream.available();
+                        bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                        bytesRead = fileInputStream.read(buffer, 0, bufferSize);
                     }
-                    bytesAvailable = fileInputStream.available();
-                    bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                    bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    response = "error";
+                    return response;
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-                response = "error";
-                return response;
+                outputStream.writeBytes(lineEnd);
+                outputStream.writeBytes(twoHyphens + boundary + twoHyphens
+                        + lineEnd);
             }
-            outputStream.writeBytes(lineEnd);
-            outputStream.writeBytes(twoHyphens + boundary + twoHyphens
-                    + lineEnd);
-
             // Responses from the server (code and message)
             int serverResponseCode = connection.getResponseCode();
-            String serverResponseMessage = connection.getResponseMessage();
-            System.out.println("Server Response Code " + " " + serverResponseCode);
-            System.out.println("Server Response Message "+ serverResponseMessage);
 
-            if (serverResponseCode == 200) {
-                response = "true";
-            }else
-            {
-                response = "false";
-            }
+            if (serverResponseCode == 200) response = "true";
+            else response = "false";
 
-            fileInputStream.close();
-            outputStream.flush();
+            fileInputStream.close(); outputStream.flush();
 
-            connection.getInputStream();
-            //for android InputStream is = connection.getInputStream();
-            java.io.InputStream is = connection.getInputStream();
+            connection.getInputStream(); java.io.InputStream is = connection.getInputStream();
 
             int ch;
             StringBuffer b = new StringBuffer();
@@ -573,72 +744,15 @@ public class Ubah extends AppCompatActivity {
                 b.append( (char)ch );
             }
 
-            String responseString = b.toString();
-            System.out.println("response string is" + responseString); //Here is the actual output
-
             outputStream.close();
             outputStream = null;
 
         } catch (Exception ex) {
             // Exception handling
             response = "error";
-            System.out.println("Send file Exception" + ex.getMessage() + "");
             ex.printStackTrace();
+            Log.e("Ini Lhoh Error ", ex.getMessage());
         }
         return response;
     }
-
-    private void get_list_lokasi(String url) {
-        class GetJSON extends AsyncTask<String, Void, String> {
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-            }
-
-            @Override
-            protected String doInBackground(String... params) {
-
-                String uri = params[0];
-
-                BufferedReader bufferedReader = null;
-                try {
-                    URL url = new URL(uri);
-                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                    StringBuilder sb = new StringBuilder();
-
-                    bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-
-                    String json = "";
-                    while((json = bufferedReader.readLine())!= null){
-                        sb.append(json);
-                    }
-                    json = sb.toString().trim();
-                    JSONObject jObj = new JSONObject(json);
-                    str_json = jObj.getJSONArray("lokasi");
-                    for(int i = 0; i < str_json.length(); i++){
-                        JSONObject ar = str_json.getJSONObject(i);
-                        String id = ar.getString("kode");
-                        list.add(id);
-                    }
-                    con.disconnect();
-                }catch(Exception ex){
-                    return null;
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-                Spinner sp = (Spinner) findViewById(R.id.ruangan);
-                ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(Ubah.this, android.R.layout.simple_spinner_item, list);
-                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                sp.setAdapter(dataAdapter);
-            }
-        }
-        GetJSON gj = new GetJSON();
-        gj.execute(url);
-    }
-
 }

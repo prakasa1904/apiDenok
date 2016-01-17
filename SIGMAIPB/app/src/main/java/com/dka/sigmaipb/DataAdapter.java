@@ -76,7 +76,6 @@ public class DataAdapter extends ArrayAdapter<Data>{
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
         FileCache fileCache;
-        String urldisplay = null;
         MemoryCache memoryCache = new MemoryCache();
 
         public DownloadImageTask(ImageView bmImage) {
@@ -87,9 +86,8 @@ public class DataAdapter extends ArrayAdapter<Data>{
         protected Bitmap doInBackground(String... urls) {
             /* Define URL */
             String urldisplay = urls[0];
-            Log.e("Bangke Isi Lu ", String.valueOf(urldisplay));
 
-            if( urldisplay == null || urldisplay.isEmpty() ){
+            if( urldisplay.length() < 1 ){
                 return null;
             }else{
                 /* Check URL in file exist or NOT ! */
@@ -108,21 +106,23 @@ public class DataAdapter extends ArrayAdapter<Data>{
 
                         /* Check URL OK ? */
                         int status = conn.getResponseCode();
-                        Log.e("Ini URL imagenya ", String.valueOf(status));
+                        if(status == 200){
+                            InputStream is = conn.getInputStream();
+                            OutputStream os = new FileOutputStream(f);
 
-                        InputStream is = conn.getInputStream();
-                        OutputStream os = new FileOutputStream(f);
+                            /* Write Bitmap and URL to Cache */
+                            Utils.CopyStream(is, os);
 
-                        /* Write Bitmap and URL to Cache */
-                        Utils.CopyStream(is, os);
+                            bitmap = decodeFile(f);
+                            os.close();
+                            conn.disconnect();
 
-                        bitmap = decodeFile(f);
-                        os.close();
-                        conn.disconnect();
+                            memoryCache.put(urldisplay, bitmap);
 
-                        memoryCache.put(urldisplay, bitmap);
-
-                        return bitmap;
+                            return bitmap;
+                        }else{
+                            return null;
+                        }
                     } catch (Exception e) {
                         Log.e("Error Sigma Man ", e.getMessage());
                         e.printStackTrace();

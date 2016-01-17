@@ -1,12 +1,20 @@
 package com.dka.sigmaipb;
 
+import android.app.ProgressDialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dka.sigmaipb.cache.FileCache;
+import com.dka.sigmaipb.cache.MemoryCache;
+import com.dka.sigmaipb.cache.Utils;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -14,12 +22,33 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.dka.sigmaipb.peta.MyMarker;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class PetaHasilPencarian extends AppCompatActivity {
+    String key, val = "";
+    JSONArray str_json = null;
+
+    ImageView markerIcon = null;
+    TextView markerLabel,anotherLabel;
+    View vmap;
 
     private GoogleMap mMap;
     private ArrayList<MyMarker> mMyMarkersArray = new ArrayList<MyMarker>();
@@ -31,21 +60,110 @@ public class PetaHasilPencarian extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_peta_hasil_pencarian);
 
+        vmap  = getLayoutInflater().inflate(R.layout.infomap, null);
+
+        markerIcon = (ImageView) vmap.findViewById(R.id.marker_icon);
+
+        markerLabel = (TextView) vmap.findViewById(R.id.marker_label);
+
+        anotherLabel = (TextView) vmap.findViewById(R.id.another_label);
+
         // Initialize the HashMap for Markers and MyMarker object
         mMarkersHashMap = new HashMap<Marker, MyMarker>();
 
-        mMyMarkersArray.add(new MyMarker("Brasil", "icon1", Double.parseDouble("-28.5971788"), Double.parseDouble("-52.7309824")));
-        mMyMarkersArray.add(new MyMarker("United States", "icon2", Double.parseDouble("33.7266622"), Double.parseDouble("-87.1469829")));
-        mMyMarkersArray.add(new MyMarker("Canada", "icon3", Double.parseDouble("51.8917773"), Double.parseDouble("-86.0922954")));
-        mMyMarkersArray.add(new MyMarker("England", "icon4", Double.parseDouble("52.4435047"), Double.parseDouble("-3.4199249")));
-        mMyMarkersArray.add(new MyMarker("España", "icon5", Double.parseDouble("41.8728262"), Double.parseDouble("-0.2375882")));
-        mMyMarkersArray.add(new MyMarker("Portugal", "icon6", Double.parseDouble("40.8316649"), Double.parseDouble("-4.936009")));
-        mMyMarkersArray.add(new MyMarker("Deutschland", "icon7", Double.parseDouble("51.1642292"), Double.parseDouble("10.4541194")));
-        mMyMarkersArray.add(new MyMarker("Atlantic Ocean Dan Sebagainya", "icondefault", Double.parseDouble("-13.1294607"), Double.parseDouble("-19.9602353")));
+        key = getIntent().getStringExtra("key").toLowerCase().replace(" ", "_");
+        val = getIntent().getStringExtra("text");
+        new GetDataMap().execute("http://172.20.10.4/SigmaIpb/api/get_asset/1/10/" + key + "/" + val);
+    }
 
-        setUpMap();
+    class GetDataMap extends AsyncTask<String, Void, Boolean> {
+        ProgressDialog loading;
 
-        plotMarkers(mMyMarkersArray);
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loading = ProgressDialog.show(PetaHasilPencarian.this, "Mohon tunggu...",null,true,true);
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+
+            String uri = params[0];
+
+            BufferedReader bufferedReader = null;
+            try {
+                URL url = new URL(uri);
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                StringBuilder sb = new StringBuilder();
+
+                bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+                String json = "";
+                while((json = bufferedReader.readLine())!= null){
+                    sb.append(json);
+                }
+                json = sb.toString().trim();
+                JSONObject jObj = new JSONObject(json);
+                str_json = jObj.getJSONArray("data");
+                con.disconnect();
+                return true;
+            }catch(Exception ex){
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if(result == false)
+                Toast.makeText(getApplicationContext(), "Unable to fetch data from server", Toast.LENGTH_LONG).show();
+            else{
+                for(int i = 0; i < str_json.length(); i++){
+                    JSONObject ar = null;
+                    try {
+                        ar = str_json.getJSONObject(i);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    try {
+                        if(ar.getString("koordinat").length() > 0 ) {
+                            /* Koordinate Creator */
+                            String[] koordinat = null;
+                            String LongLat = "";
+                            try {
+                                LongLat = ar.getString("koordinat");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            String latitude = "";
+                            String longitude = "";
+                            if (LongLat != "") {
+                                koordinat = LongLat.split(",");
+                                if (koordinat.length > 1) {
+                                    if (koordinat[0] != null)
+                                        latitude = koordinat[0].replace("(", "");
+
+                                    if (koordinat[1] != null)
+                                        longitude = koordinat[1].replace(")", "");
+                                }
+                            }
+                            /* END:: Koordinate Creator */
+                            if (latitude.length() > 0 && longitude.length() > 0){
+                                Log.e("Ada Data ", latitude + " === " + longitude);
+                                mMyMarkersArray.add(new MyMarker(PetaHasilPencarian.this, markerIcon, ar.getString("nama_barang"), ar.getString("kode_lokasi"), ar.getString("foto"), Double.parseDouble(longitude), Double.parseDouble(latitude)));
+                            }else{ Log.e("Tidak Ada Data ", " Long Lat");}
+                        }else{
+                            Log.e("Tidak Ada Data ", " Long Lat");
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                setUpMap();
+                plotMarkers(mMyMarkersArray);
+                loading.dismiss(); loading = null;
+            }
+        }
     }
 
     private void plotMarkers(ArrayList<MyMarker> markers)
@@ -66,27 +184,6 @@ public class PetaHasilPencarian extends AppCompatActivity {
             }
         }
     }
-
-    private int manageMarkerIcon(String markerIcon)
-    {
-        if (markerIcon.equals("icon1"))
-            return R.drawable.img_default;
-        else if(markerIcon.equals("icon2"))
-            return R.drawable.img_default;
-        else if(markerIcon.equals("icon3"))
-            return R.drawable.ipb;
-        else if(markerIcon.equals("icon4"))
-            return R.drawable.ipb;
-        else if(markerIcon.equals("icon5"))
-            return R.drawable.img_default;
-        else if(markerIcon.equals("icon6"))
-            return R.drawable.img_default;
-        else if(markerIcon.equals("icon7"))
-            return R.drawable.img_default;
-        else
-            return R.drawable.img_default;
-    }
-
 
     private void setUpMap()
     {
@@ -130,22 +227,17 @@ public class PetaHasilPencarian extends AppCompatActivity {
         @Override
         public View getInfoContents(Marker marker)
         {
-            View v  = getLayoutInflater().inflate(R.layout.infomap, null);
-
             MyMarker myMarker = mMarkersHashMap.get(marker);
 
-            ImageView markerIcon = (ImageView) v.findViewById(R.id.marker_icon);
-
-            TextView markerLabel = (TextView)v.findViewById(R.id.marker_label);
-
-            TextView anotherLabel = (TextView)v.findViewById(R.id.another_label);
-
-            markerIcon.setImageResource(manageMarkerIcon(myMarker.getmIcon()));
+            if(myMarker.getmIcon().length() > 0 )
+                myMarker.setBitmap();
+            else markerIcon.setImageResource(R.drawable.img_default);
 
             markerLabel.setText(myMarker.getmLabel());
-            anotherLabel.setText("Deskripsi aga panjang");
+            anotherLabel.setText("Lokasi : " + myMarker.getmLokasi());
+            //anotherLabel.setText("Deskripsi aga panjang");
 
-            return v;
+            return vmap;
         }
     }
 }
