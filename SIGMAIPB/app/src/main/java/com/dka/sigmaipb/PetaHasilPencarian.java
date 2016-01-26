@@ -1,13 +1,16 @@
 package com.dka.sigmaipb;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,7 +46,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class PetaHasilPencarian extends AppCompatActivity {
-    String key, val = "";
+    String key, val = null;
     JSONArray str_json = null;
 
     ImageView markerIcon = null;
@@ -74,6 +77,22 @@ public class PetaHasilPencarian extends AppCompatActivity {
         key = getIntent().getStringExtra("key").toLowerCase().replace(" ", "_");
         val = getIntent().getStringExtra("text");
         new GetDataMap().execute("http://172.20.10.4/SigmaIpb/api/get_asset/1/10/" + key + "/" + val);
+
+        this.addListenerOnButton();
+    }
+
+    public void addListenerOnButton() {
+        FloatingActionButton button1 = (FloatingActionButton) findViewById(R.id.toEdite);
+        button1.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                String sentKey, sentVal = null;
+                sentKey = key; sentVal = val;
+                Intent myIntent = new Intent(view.getContext(), Hasilpencarian.class);
+                myIntent.putExtra("key", sentKey);
+                myIntent.putExtra("text", sentVal);
+                startActivity(myIntent);
+            }
+        });
     }
 
     class GetDataMap extends AsyncTask<String, Void, Boolean> {
@@ -175,7 +194,6 @@ public class PetaHasilPencarian extends AppCompatActivity {
 
                 // Create user marker with custom icon and other options
                 MarkerOptions markerOption = new MarkerOptions().position(new LatLng(myMarker.getmLatitude(), myMarker.getmLongitude()));
-                //markerOption.icon(BitmapDescriptorFactory.fromResource(R.drawable.img_default));
 
                 Marker currentMarker = mMap.addMarker(markerOption);
                 mMarkersHashMap.put(currentMarker, myMarker);
@@ -229,10 +247,13 @@ public class PetaHasilPencarian extends AppCompatActivity {
         {
             MyMarker myMarker = mMarkersHashMap.get(marker);
 
-            if(myMarker.getmIcon().length() > 0 )
-                myMarker.setBitmap();
-            else markerIcon.setImageResource(R.drawable.img_default);
 
+            if(myMarker.getmIcon().length() > 0 ) {
+                myMarker.setBitmap();
+                markerIcon.setImageBitmap(myMarker.getBitmap());
+            }else {
+                markerIcon.setImageResource(R.drawable.img_default);
+            }
             markerLabel.setText(myMarker.getmLabel());
             anotherLabel.setText("Lokasi : " + myMarker.getmLokasi());
             //anotherLabel.setText("Deskripsi aga panjang");

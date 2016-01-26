@@ -81,6 +81,10 @@ public class MyMarker {
         }
     }
 
+    public Bitmap getBitmap(){
+        return this.icon;
+    }
+
     public Double getmLatitude()
     {
         return mLatitude;

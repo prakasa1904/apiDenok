@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 
 public class Hasilpencarian extends AppCompatActivity{
-    String key, val = "";
+    String key, val = null;
     static String in_nama = "nama_barang";
     static String in_merk = "merk_type";
     static String in_foto = "foto";

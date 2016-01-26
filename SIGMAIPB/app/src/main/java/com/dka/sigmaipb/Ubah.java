@@ -3,6 +3,7 @@ package com.dka.sigmaipb;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -178,12 +179,14 @@ public class Ubah extends AppCompatActivity {
                                         dataForm.add(valueLong);
 
                                         /* After Submit */
-                                        dialog = ProgressDialog.show(Ubah.this, "", "Uploading file...", true);
-                                        //messageText.setText("uploading started.....");
                                         new Thread(new Runnable() {
                                             public void run() {
                                                 if(imagepath == null) imagepath = "false";
                                                 uploadFileToServer(imagepath, JSON_URL, dataForm);
+                                                Context context = Ubah.this;
+                                                Intent intent = null;
+                                                intent = new Intent(context, Beranda.class);
+                                                (context).startActivity(intent);
                                             }
                                         }).start();
                                         finish();
