@@ -11,7 +11,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -26,6 +30,7 @@ import java.util.ArrayList;
 
 public class Hasilpencarian extends AppCompatActivity{
     String key, val = null;
+    Integer pagination = 1;
     static String in_nama = "nama_barang";
     static String in_merk = "merk_type";
     static String in_foto = "foto";
@@ -53,7 +58,6 @@ public class Hasilpencarian extends AppCompatActivity{
 
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i("testy", "I Clicked on Row " + position + " and it worked!");
                 Intent myIntent = new Intent(view.getContext(), Ubah.class);
                 String offset = String.valueOf(position + 1);
                 myIntent.putExtra("offset", offset);
@@ -62,6 +66,8 @@ public class Hasilpencarian extends AppCompatActivity{
                 startActivity(myIntent);
             }
         });
+
+        this.addListenerOnButton();
     }
 
     @Override
@@ -84,6 +90,20 @@ public class Hasilpencarian extends AppCompatActivity{
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void addListenerOnButton() {
+        Button button1 = (Button) findViewById(R.id.btnNext);
+        button1.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View view) {
+                ListView listview = (ListView) findViewById(R.id.list_view);
+                pagination += 1;
+                new getJSON().execute("http://172.20.10.4/SigmaIpb/api/get_asset/" + pagination + "/10/" + key + "/" + val);
+                adapter = new DataAdapter(getApplicationContext(), R.layout.content_hasil_pencarian, dataList);
+                listview.setAdapter(adapter);
+            }
+        });
     }
 
     class getJSON extends AsyncTask<String, Void, Boolean>{

@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.provider.MediaStore;
+import com.dka.sigmaipb.GPSTracker;
 
 
 /**
@@ -73,8 +74,7 @@ public class Exif {
         if((LATITUDE !=null) && (LATITUDE_REF !=null) && (LONGITUDE != null) && (LONGITUDE_REF !=null)) {
             if(LATITUDE_REF.equals("N")){
                 Latitude = convertToDegree(LATITUDE);
-            }
-            else{
+            }else{
                 Latitude = 0 - convertToDegree(LATITUDE);
             }
             if(LONGITUDE_REF.equals("E")){
@@ -83,6 +83,9 @@ public class Exif {
             else{
                 Longitude = 0 - convertToDegree(LONGITUDE);
             }
+        }else{
+            Latitude = null;
+            Longitude = null;
         }
     }
 
@@ -98,7 +101,7 @@ public class Exif {
         String[] stringM = DMS[1].split("/", 2);
         Double M0 = new Double(stringM[0]);
         Double M1 = new Double(stringM[1]);
-        Double FloatM = M0/M1;
+        Double FloatM = M0 / M1;
 
         String[] stringS = DMS[2].split("/", 2);
         Double S0 = new Double(stringS[0]);

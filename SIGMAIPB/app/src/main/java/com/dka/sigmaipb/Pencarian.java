@@ -1,6 +1,5 @@
 package com.dka.sigmaipb;
 
-import android.app.LauncherActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -56,7 +55,6 @@ public class Pencarian extends AppCompatActivity{
 
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i("testy", "I Clicked on Row " + position + " and it worked!");
                 Intent myIntent = new Intent(view.getContext(), Ubah.class);
                 String offset = String.valueOf(position + 1);
                 myIntent.putExtra("offset", offset);
@@ -80,7 +78,7 @@ public class Pencarian extends AppCompatActivity{
 
     public void addListenerOnButton() {
 
-        Button button1 = (Button) findViewById(R.id.btnCari);
+        Button button1 = (Button) findViewById(R.id.btnNext);
         button1.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {

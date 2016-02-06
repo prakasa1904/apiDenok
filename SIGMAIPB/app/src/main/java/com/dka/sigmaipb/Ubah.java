@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -536,25 +537,59 @@ public class Ubah extends AppCompatActivity {
         }
 
         if (resultCode == Activity.RESULT_OK) {
-            Uri LatLong = data.getData();
-            //Uri Long = data.getData();
 
-            if (requestCode == SELECT_FILE)
-                onSelectFromGalleryResult(data);
-            else if (requestCode == REQUEST_CAMERA)
-                onCaptureImageResult(data);
+            exif = new Exif(imagepath, this);
+            if( exif.getLat().length() > 4 ){
+                Log.e( "Error Isi : ", String.valueOf(exif.getLat().length()));
+                latData.setText(exif.getLat());
+                longData.setText(exif.getLon());
+            }else{
+                GPSTracker gpsTracker = new GPSTracker(this);
+                if (gpsTracker.getIsGPSTrackingEnabled()){
+                    ExifInterface exif = null;
+                    try {
+                        exif = new ExifInterface(imagepath);
+                    } catch (IOException e) {
+                        Log.e("File Exif Not Found ", "Error");
+                        e.printStackTrace();
+                    }
+                    int num1Lat = (int)Math.floor(gpsTracker.latitude);
+                    int num2Lat = (int)Math.floor((gpsTracker.latitude - num1Lat) * 60);
+                    double num3Lat = (gpsTracker.latitude - ((double)num1Lat+((double)num2Lat/60))) * 3600000;
 
-            /*exif = new Exif(LatLong, this);
-            textLat.setText(exif.getLat());
-            textLon.setText(exif.getLon());*/
+                    int num1Lon = (int)Math.floor(gpsTracker.longitude);
+                    int num2Lon = (int)Math.floor((gpsTracker.longitude - num1Lon) * 60);
+                    double num3Lon = (gpsTracker.longitude - ((double)num1Lon+((double)num2Lon/60))) * 3600000;
 
-            GPSTracker gpsTracker = new GPSTracker(this);
-            if (gpsTracker.getIsGPSTrackingEnabled()){
-                String stringLatitude = String.valueOf(gpsTracker.latitude);
-                latData.setText(stringLatitude);
+                    exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, num1Lat+"/1,"+num2Lat+"/1,"+num3Lat+"/1000");
+                    exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, num1Lon+"/1,"+num2Lon+"/1,"+num3Lon+"/1000");
 
-                String stringLongitude = String.valueOf(gpsTracker.longitude);
-                longData.setText(stringLongitude);
+
+                    if (gpsTracker.latitude > 0) {
+                        exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "N");
+                    } else {
+                        exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "S");
+                    }
+
+                    if (gpsTracker.longitude > 0) {
+                        exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, "E");
+                    } else {
+                        exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, "W");
+                    }
+
+                    try {
+                        exif.saveAttributes();
+                        Log.e("Nulis Exif", "Tapi Gagal");
+                    } catch (IOException e) {
+                        Log.e("Ga perlu Nulis Exif", e.toString());
+                        e.printStackTrace();
+                    }
+                    String stringLatitude = String.valueOf(gpsTracker.latitude);
+                    latData.setText(stringLatitude);
+
+                    String stringLongitude = String.valueOf(gpsTracker.longitude);
+                    longData.setText(stringLongitude);
+                }
             }
         }
     }
@@ -613,7 +648,6 @@ public class Ubah extends AppCompatActivity {
         bm = BitmapFactory.decodeFile(selectedImagePath, options);
 
         imageview.setImageBitmap(bm);
-        messageText.setText("Sukses");
     }
 
     private void onCaptureImageResult(Intent data) {
@@ -624,6 +658,7 @@ public class Ubah extends AppCompatActivity {
         File destination = new File(Environment.getExternalStorageDirectory(),
                 System.currentTimeMillis() + ".jpg");
 
+        imagepath = destination.getAbsolutePath();
         FileOutputStream fo;
         try {
             destination.createNewFile();

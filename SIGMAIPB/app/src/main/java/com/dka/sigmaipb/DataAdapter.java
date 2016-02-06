@@ -124,8 +124,6 @@ public class DataAdapter extends ArrayAdapter<Data>{
                             return null;
                         }
                     } catch (Exception e) {
-                        Log.e("Error Sigma Man ", e.getMessage());
-                        e.printStackTrace();
                         return null;
                     }
                 }

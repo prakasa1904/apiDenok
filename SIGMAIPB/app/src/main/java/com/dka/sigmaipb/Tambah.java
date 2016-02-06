@@ -2,7 +2,6 @@ package com.dka.sigmaipb;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,15 +24,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.dka.sigmaipb.GPSTracker;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -48,12 +42,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
-
-import static com.dka.sigmaipb.R.layout.content_pencarian;
-import static com.dka.sigmaipb.R.layout.content_tambah;
 
 public class Tambah extends AppCompatActivity{
 
@@ -70,7 +62,7 @@ public class Tambah extends AppCompatActivity{
     public ArrayList<String> dataForm = new ArrayList<String>();
 
     Spinner sp;
-    private TextView messageText, textLat, textLon;
+    private TextView textLat, textLon;
     public ImageView imageview;
     private Button btnAmbilGambar;
     private Button saveData;
@@ -79,9 +71,6 @@ public class Tambah extends AppCompatActivity{
     public EditText idData, namaData, merkData, tahunData, hargaData, sumberData, latData, longData;
     public Spinner ruangData;
 
-    private long fileSize = 0;
-
-    EditText textlat, textlon;
     Exif exif;
 
     /* Data Spinner */
@@ -93,7 +82,6 @@ public class Tambah extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tambah);
 
-        messageText  = (TextView)findViewById(R.id.messageText);
         imageview = (ImageView)findViewById(R.id.imgPreview);
 
         sp = (Spinner) findViewById(R.id.ruangan);
@@ -232,25 +220,59 @@ public class Tambah extends AppCompatActivity{
         }
 
         if (resultCode == Activity.RESULT_OK) {
-            Uri LatLong = data.getData();
-            //Uri Long = data.getData();
 
-            if (requestCode == SELECT_FILE)
-                onSelectFromGalleryResult(data);
-            else if (requestCode == REQUEST_CAMERA)
-                onCaptureImageResult(data);
+            exif = new Exif(imagepath, this);
+            if( exif.getLat().length() > 4 ){
+                Log.e( "Error Isi : ", String.valueOf(exif.getLat().length()));
+                textLat.setText(exif.getLat());
+                textLon.setText(exif.getLon());
+            }else{
+                GPSTracker gpsTracker = new GPSTracker(this);
+                if (gpsTracker.getIsGPSTrackingEnabled()){
+                    ExifInterface exif = null;
+                    try {
+                        exif = new ExifInterface(imagepath);
+                    } catch (IOException e) {
+                        Log.e("File Exif Not Found ", "Error");
+                        e.printStackTrace();
+                    }
+                    int num1Lat = (int)Math.floor(gpsTracker.latitude);
+                    int num2Lat = (int)Math.floor((gpsTracker.latitude - num1Lat) * 60);
+                    double num3Lat = (gpsTracker.latitude - ((double)num1Lat+((double)num2Lat/60))) * 3600000;
 
-            /*exif = new Exif(LatLong, this);
-            textLat.setText(exif.getLat());
-            textLon.setText(exif.getLon());*/
+                    int num1Lon = (int)Math.floor(gpsTracker.longitude);
+                    int num2Lon = (int)Math.floor((gpsTracker.longitude - num1Lon) * 60);
+                    double num3Lon = (gpsTracker.longitude - ((double)num1Lon+((double)num2Lon/60))) * 3600000;
 
-            GPSTracker gpsTracker = new GPSTracker(this);
-            if (gpsTracker.getIsGPSTrackingEnabled()){
-                String stringLatitude = String.valueOf(gpsTracker.latitude);
-                textLat.setText(stringLatitude);
+                    exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, num1Lat+"/1,"+num2Lat+"/1,"+num3Lat+"/1000");
+                    exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, num1Lon+"/1,"+num2Lon+"/1,"+num3Lon+"/1000");
 
-                String stringLongitude = String.valueOf(gpsTracker.longitude);
-                textLon.setText(stringLongitude);
+
+                    if (gpsTracker.latitude > 0) {
+                        exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "N");
+                    } else {
+                        exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "S");
+                    }
+
+                    if (gpsTracker.longitude > 0) {
+                        exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, "E");
+                    } else {
+                        exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, "W");
+                    }
+
+                    try {
+                        exif.saveAttributes();
+                        Log.e("Nulis Exif", "Tapi Gagal");
+                    } catch (IOException e) {
+                        Log.e("Ga perlu Nulis Exif", e.toString());
+                        e.printStackTrace();
+                    }
+                    String stringLatitude = String.valueOf(gpsTracker.latitude);
+                    textLat.setText(stringLatitude);
+
+                    String stringLongitude = String.valueOf(gpsTracker.longitude);
+                    textLon.setText(stringLongitude);
+                }
             }
         }
     }
@@ -271,7 +293,7 @@ public class Tambah extends AppCompatActivity{
                 } else if (items[item].equals("Galeri")) {
                     Intent intent = new Intent(
                             Intent.ACTION_PICK,
-                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
                     intent.setType("image/*");
                     startActivityForResult(
                             Intent.createChooser(intent, "Select File"),
@@ -309,23 +331,26 @@ public class Tambah extends AppCompatActivity{
         bm = BitmapFactory.decodeFile(selectedImagePath, options);
 
         imageview.setImageBitmap(bm);
-        messageText.setText("Sukses");
     }
 
     private void onCaptureImageResult(Intent data) {
         Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
 
-        File destination = new File(Environment.getExternalStorageDirectory(),
-                System.currentTimeMillis() + ".jpg");
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        File imgFolder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "SIGMAIPB");
+        imgFolder.mkdirs();
+
+        File image = new File(imgFolder, "SIGMA_" + timeStamp + ".jpg");
 
         FileOutputStream fo;
         try {
-            destination.createNewFile();
-            fo = new FileOutputStream(destination);
+            image.createNewFile();
+            fo = new FileOutputStream(image);
+            thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, fo);
             fo.write(bytes.toByteArray());
             fo.close();
+            imagepath = image.getAbsolutePath();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
