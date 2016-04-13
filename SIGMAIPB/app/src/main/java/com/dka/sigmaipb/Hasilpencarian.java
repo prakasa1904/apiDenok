@@ -11,11 +11,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -26,25 +24,25 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 
 public class Hasilpencarian extends AppCompatActivity{
-    String key, val = null;
+    String key, val = "";
     Integer pagination = 1;
     static String in_nama = "nama_barang";
     static String in_merk = "merk_type";
     static String in_foto = "foto";
     JSONArray str_json = null;
 
-    ArrayList<Data> dataList;
-    DataAdapter adapter;
+    ArrayList<Data>  dataList = new ArrayList<Data>();
+    DataAdapter adapter; ListView listview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hasil_pencarian);
-
-        dataList = new ArrayList<Data>();
         key = getIntent().getStringExtra("key").toLowerCase().replace(" ", "_");
         val = getIntent().getStringExtra("text");
         new getJSON().execute("http://172.20.10.4/SigmaIpb/api/get_asset/1/10/" + key + "/" + val);
@@ -52,9 +50,9 @@ public class Hasilpencarian extends AppCompatActivity{
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ListView listview = (ListView) findViewById(R.id.list_view);
-        adapter = new DataAdapter(getApplicationContext(), R.layout.content_hasil_pencarian, dataList);
-        listview.setAdapter(adapter);
+        listview = (ListView) findViewById(R.id.list_view);
+        /*adapter = new DataAdapter(getApplicationContext(), R.layout.content_hasil_pencarian, dataList);
+        listview.setAdapter(adapter);*/
 
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -95,13 +93,17 @@ public class Hasilpencarian extends AppCompatActivity{
     public void addListenerOnButton() {
         Button button1 = (Button) findViewById(R.id.btnNext);
         button1.setOnClickListener(new View.OnClickListener() {
-
             public void onClick(View view) {
-                ListView listview = (ListView) findViewById(R.id.list_view);
                 pagination += 1;
                 new getJSON().execute("http://172.20.10.4/SigmaIpb/api/get_asset/" + pagination + "/10/" + key + "/" + val);
-                adapter = new DataAdapter(getApplicationContext(), R.layout.content_hasil_pencarian, dataList);
-                listview.setAdapter(adapter);
+                /*runOnUiThread(new Runnable() {
+                    public void run() {
+
+                        listview.setAdapter(adapter);
+
+                    }
+                });*/
+
             }
         });
     }
@@ -152,7 +154,16 @@ public class Hasilpencarian extends AppCompatActivity{
 
         @Override
         protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
             loading.dismiss(); loading = null;
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    adapter = new DataAdapter(getApplicationContext(), R.layout.content_hasil_pencarian, dataList);
+                    adapter.notifyDataSetChanged();
+                    listview.setAdapter(adapter);
+                }
+            });
+
             if(result == false)
                 Toast.makeText(getApplicationContext(), "Unable to fetch data from server", Toast.LENGTH_LONG).show();
         }
