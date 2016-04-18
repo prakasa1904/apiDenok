@@ -24,7 +24,8 @@
             android:layout_toRightOf="@id/icon"
             android:ellipsize="marquee"
             android:singleLine="true"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textColor="@color/colorPrimary"/>
 
         <TextView
             android:id="@+id/merk_barang"
@@ -36,6 +37,6 @@
             android:ellipsize="marquee"
             android:singleLine="true"
             android:textSize="12sp"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="@color/colorAccent"/>
     </LinearLayout>
 </LinearLayout>
