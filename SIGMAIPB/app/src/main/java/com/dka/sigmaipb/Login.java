@@ -106,56 +106,52 @@ public class Login extends AppCompatActivity {
         try {
             URL url = new URL(targetUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-            // Allow Inputs & Outputs
-            connection.setDoInput(true);
-            connection.setDoOutput(true);
-            connection.setUseCaches(false);
-            connection.setChunkedStreamingMode(1024);
-            // Enable POST method
-            connection.setRequestMethod("POST");
-
-            connection.setRequestProperty("Connection", "Keep-Alive");
-            connection.setRequestProperty("Content-Type",
-                    "multipart/form-data; boundary=" + boundary);
-
-            DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
-            outputStream.writeBytes(twoHyphens + boundary + lineEnd);
-
-            ArrayList<String> keyForm = new ArrayList<String>();
-            keyForm.add("username");
-            keyForm.add("password");
-            for (int i = 0; i < keyForm.size(); i++) {
-                outputStream.writeBytes("Content-Disposition: form-data; name=\"" + keyForm.get(i) + "\"" + lineEnd);
-                outputStream.writeBytes("Content-Type: text/plain;charset=UTF-8" + lineEnd);
-                outputStream.writeBytes("Content-Length: " + dataForm.get(i).length() + lineEnd);
-                outputStream.writeBytes(lineEnd);
-                outputStream.writeBytes(dataForm.get(i) + lineEnd);
-                outputStream.writeBytes(twoHyphens + boundary + lineEnd);
-            }
-
             // Responses from the server (code and message)
-            int serverResponseCode = connection.getResponseCode();
 
-            if (serverResponseCode == 200){
+                // Allow Inputs & Outputs
+                connection.setDoInput(true);
+                connection.setUseCaches(false);
+                connection.setChunkedStreamingMode(1024);
+                // Enable POST method
+                connection.setRequestMethod("POST");
+
+                connection.setRequestProperty("Connection", "Keep-Alive");
+                connection.setRequestProperty("Content-Type",
+                        "multipart/form-data; boundary=" + boundary);
+
+                DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
+                outputStream.writeBytes(twoHyphens + boundary + lineEnd);
+
+                ArrayList<String> keyForm = new ArrayList<String>();
+                keyForm.add("username");
+                keyForm.add("password");
+                for (int i = 0; i < keyForm.size(); i++) {
+                    outputStream.writeBytes("Content-Disposition: form-data; name=\"" + keyForm.get(i) + "\"" + lineEnd);
+                    outputStream.writeBytes("Content-Type: text/plain;charset=UTF-8" + lineEnd);
+                    outputStream.writeBytes("Content-Length: " + dataForm.get(i).length() + lineEnd);
+                    outputStream.writeBytes(lineEnd);
+                    outputStream.writeBytes(dataForm.get(i) + lineEnd);
+                    outputStream.writeBytes(twoHyphens + boundary + lineEnd);
+                }
+
+            int serverResponseCode = connection.getResponseCode();
+            if (serverResponseCode == 200) {
+
+
                 BufferedInputStream output = new BufferedInputStream(connection.getInputStream());
                 BufferedReader br = new BufferedReader(new InputStreamReader(output));
                 while ((content = br.readLine()) != null) {
                     sb.append(content);
                 }
                 result = sb.toString();
-                Log.e("Penanda", "atas");
-                Log.e("LOLOLOLOLO", result);
-                Log.e("Penanda", "bawah");
+
+                outputStream.flush();
+                outputStream.close();
+            }else{
+                result = "0";
             }
-
-            //connection.getInputStream();
-
-            outputStream.flush();
-
-            outputStream.close();
-
         } catch (Exception ex) {
+            result = "0";
             ex.printStackTrace();
             Log.e("e", ex.getMessage());
         }

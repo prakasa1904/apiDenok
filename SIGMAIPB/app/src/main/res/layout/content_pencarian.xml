@@ -26,11 +26,7 @@
             android:ellipsize="marquee"
             android:singleLine="true"
             android:textSize="14sp"
-<<<<<<< HEAD
             android:textColor="@color/colorAccent" />
-=======
-            android:textColor="@color/colorPrimary"/>
->>>>>>> bc319faa46ceb215b44ecc8a4027daf084da342f
 
         <TextView
             android:id="@+id/merk_barang"
@@ -43,5 +39,29 @@
             android:singleLine="true"
             android:textSize="12sp"
             android:textColor="@color/colorAccent" />
+
+        <TextView
+            android:id="@+id/tahun"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@id/icon"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:textSize="12sp"
+            android:textColor="@color/colorAccent"/>
+
+        <TextView
+            android:id="@+id/wing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@id/icon"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:textSize="12sp"
+            android:textColor="@color/colorAccent"/>
     </LinearLayout>
 </LinearLayout>

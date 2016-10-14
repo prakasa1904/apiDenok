@@ -1,5 +1,20 @@
 package com.dka.sigmaipb;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.dka.sigmaipb.cache.FileCache;
+import com.dka.sigmaipb.cache.MemoryCache;
+import com.dka.sigmaipb.cache.Utils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -11,20 +26,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
-
 /* Internal Libs */
-import com.dka.sigmaipb.cache.*;
 
 /**
  * Created by prakasa on 07/01/16.
@@ -52,6 +54,8 @@ public class DataAdapter extends ArrayAdapter<Data>{
             v = vi.inflate(Resource, null);
             holder.imageview = (ImageView) v.findViewById(R.id.icon_images);
             holder.namaBarang = (TextView) v.findViewById(R.id.nama_barang);
+            holder.tahun = (TextView) v.findViewById(R.id.tahun);
+            holder.wing = (TextView) v.findViewById(R.id.wing);
             holder.merkType = (TextView) v.findViewById(R.id.merk_barang);
             v.setTag(holder);
         } else {
@@ -62,6 +66,8 @@ public class DataAdapter extends ArrayAdapter<Data>{
         }
         holder.namaBarang.setText(dataList.get(position).getName());
         holder.merkType.setText(dataList.get(position).getMerk());
+        holder.tahun.setText(dataList.get(position).getTahun());
+        holder.wing.setText(dataList.get(position).getWing());
 
         return v;
     }
@@ -69,6 +75,8 @@ public class DataAdapter extends ArrayAdapter<Data>{
     static class ViewHolder {
         public ImageView imageview;
         public TextView namaBarang;
+        public TextView tahun;
+        public TextView wing;
         public TextView merkType;
 
     }

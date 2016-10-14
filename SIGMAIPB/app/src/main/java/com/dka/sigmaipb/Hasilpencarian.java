@@ -6,12 +6,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -24,8 +22,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 
 public class Hasilpencarian extends AppCompatActivity{
@@ -33,6 +29,8 @@ public class Hasilpencarian extends AppCompatActivity{
     Integer pagination = 1;
     static String in_nama = "nama_barang";
     static String in_merk = "merk_type";
+    static String in_tahun = "tahun";
+    static String in_wing = "wing";
     static String in_foto = "foto";
     JSONArray str_json = null;
 
@@ -142,6 +140,8 @@ public class Hasilpencarian extends AppCompatActivity{
                     Data data = new Data();
                     data.setName(ar.getString(in_nama));
                     data.setMerk(ar.getString(in_merk));
+                    data.setTahun(ar.getString(in_tahun));
+                    data.setWing(ar.getString(in_wing));
                     data.setImage(ar.getString(in_foto));
                     dataList.add(data);
                 }

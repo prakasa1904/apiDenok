@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +31,8 @@ import java.util.List;
 public class Pencarian extends AppCompatActivity{
     static String in_nama = "nama_barang";
     static String in_merk = "merk_type";
+    static String in_tahun = "tahun";
+    static String in_wing = "wing";
     static String in_foto = "foto";
     JSONArray str_json = null;
 
@@ -153,6 +154,8 @@ public class Pencarian extends AppCompatActivity{
                     Data data = new Data();
                     data.setName(ar.getString(in_nama));
                     data.setMerk(ar.getString(in_merk));
+                    data.setTahun(ar.getString(in_tahun));
+                    data.setWing(ar.getString(in_wing));
                     data.setImage(ar.getString(in_foto));
                     dataList.add(data);
                 }
