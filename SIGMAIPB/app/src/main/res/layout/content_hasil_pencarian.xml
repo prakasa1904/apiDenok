@@ -25,7 +25,11 @@
             android:ellipsize="marquee"
             android:singleLine="true"
             android:textSize="14sp"
+<<<<<<< HEAD
             android:textColor="@color/colorAccent" />
+=======
+            android:textColor="@color/colorPrimary"/>
+>>>>>>> bc319faa46ceb215b44ecc8a4027daf084da342f
 
         <TextView
             android:id="@+id/merk_barang"
@@ -37,6 +41,6 @@
             android:ellipsize="marquee"
             android:singleLine="true"
             android:textSize="12sp"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="@color/colorAccent"/>
     </LinearLayout>
 </LinearLayout>
