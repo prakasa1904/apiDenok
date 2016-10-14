@@ -3,7 +3,6 @@ package com.dka.sigmaipb.peta;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
@@ -31,12 +30,14 @@ public class MyMarker {
     private ImageView imgFrame;
     private String mLabel;
     private String mLokasi;
+    private String mTahun;
+    private String mWing;
     private String mIcon;
     private Double mLatitude;
     private Double mLongitude;
     private Bitmap icon = null;
 
-    public MyMarker(Context context, ImageView markerIcon, String label, String lokasi, String icon, Double latitude, Double longitude)
+    public MyMarker(Context context, ImageView markerIcon, String label, String lokasi, String icon, Double latitude, Double longitude, String tahun, String wing)
     {
         this.context = context;
         this.imgFrame = markerIcon;
@@ -44,6 +45,8 @@ public class MyMarker {
         this.mLokasi = lokasi;
         this.mLatitude = latitude;
         this.mLongitude = longitude;
+        this.mTahun = tahun;
+        this.mWing = wing;
         this.mIcon = icon;
     }
 
@@ -63,6 +66,22 @@ public class MyMarker {
 
     public void setmLokasi(String mLokasi){
         this.mLokasi = mLokasi;
+    }
+
+    public void setWing(String mWing){
+        this.mWing= mWing;
+    }
+
+    public String getWing(){
+        return mWing;
+    }
+
+    public String getTahun(){
+        return mTahun;
+    }
+
+    public void setTahun(String mTahun){
+        this.mTahun= mTahun;
     }
 
     public String getmIcon()

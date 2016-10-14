@@ -29,4 +29,5 @@
     <string name="title_activity_hasil_pencarian">Hasil Pencarian</string>
     <string name="title_activity_ubah">Ubah</string>
     <string name="title_activity_peta_hasil_pencarian">PetaHasilPencarian</string>
+    <string name="title_activity_login">Login</string>
 </resources>

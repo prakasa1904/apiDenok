@@ -23,7 +23,8 @@
             android:id="@+id/marker_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textStyle="bold"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/station_info_layout2"
@@ -37,6 +38,34 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="12sp"
-            android:layout_marginTop="75px" />
+            android:layout_marginTop="65px" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/station_info_layout3"
+        android:layout_width="300px"
+        android:layout_height="250px"
+        android:orientation="horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/marker_icon">
+        <TextView
+            android:id="@+id/tahun"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:layout_marginTop="125px" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/station_info_layout4"
+        android:layout_width="300px"
+        android:layout_height="250px"
+        android:orientation="horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/marker_icon">
+        <TextView
+            android:id="@+id/wing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:layout_marginTop="180px" />
     </LinearLayout>
 </RelativeLayout>

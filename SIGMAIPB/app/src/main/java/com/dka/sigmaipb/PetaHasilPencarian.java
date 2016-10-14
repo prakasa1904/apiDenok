@@ -2,8 +2,6 @@ package com.dka.sigmaipb;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,53 +9,39 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dka.sigmaipb.cache.FileCache;
-import com.dka.sigmaipb.cache.MemoryCache;
-import com.dka.sigmaipb.cache.Utils;
+import com.dka.sigmaipb.peta.MyMarker;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import com.dka.sigmaipb.peta.MyMarker;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class PetaHasilPencarian extends AppCompatActivity {
     String key, val = null;
     JSONArray str_json = null;
 
     ImageView markerIcon = null;
-    TextView markerLabel, anotherLabel;
+    TextView markerLabel, anotherLabel, tahunLabel, wingLabel;
     View vmap;
 
     private GoogleMap mMap;
@@ -81,6 +65,10 @@ public class PetaHasilPencarian extends AppCompatActivity {
         markerLabel = (TextView) vmap.findViewById(R.id.marker_label);
 
         anotherLabel = (TextView) vmap.findViewById(R.id.another_label);
+
+        tahunLabel = (TextView) vmap.findViewById(R.id.tahun);
+
+        wingLabel = (TextView) vmap.findViewById(R.id.wing);
 
         // Initialize the HashMap for Markers and MyMarker object
         mMarkersHashMap = new HashMap<Marker, MyMarker>();
@@ -224,7 +212,7 @@ public class PetaHasilPencarian extends AppCompatActivity {
                             /* END:: Koordinate Creator */
                             if (latitude.length() > 0 && longitude.length() > 0) {
                                 Log.e("Ada Data ", latitude + " === " + longitude);
-                                mMyMarkersArray.add(new MyMarker(PetaHasilPencarian.this, markerIcon, ar.getString("nama_barang"), ar.getString("kode_lokasi"), ar.getString("foto"), Double.parseDouble(longitude), Double.parseDouble(latitude)));
+                                mMyMarkersArray.add(new MyMarker(PetaHasilPencarian.this, markerIcon, ar.getString("nama_barang"), ar.getString("kode_lokasi"), ar.getString("foto"), Double.parseDouble(longitude), Double.parseDouble(latitude), ar.getString("tahun"), ar.getString("wing")));
                             } else {
                                 Log.e("Tidak Ada Data ", " Long Lat");
                             }
@@ -303,7 +291,8 @@ public class PetaHasilPencarian extends AppCompatActivity {
             }
             markerLabel.setText(myMarker.getmLabel());
             anotherLabel.setText("Lokasi : " + myMarker.getmLokasi());
-            //anotherLabel.setText("Deskripsi aga panjang");
+            tahunLabel.setText("Tahun : " + myMarker.getTahun()); // test error
+            wingLabel.setText("Wing : " + myMarker.getWing());
 
             return vmap;
         }
