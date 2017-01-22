@@ -1,29 +1,14 @@
 package com.dka.sigmaipb;
 
-/**
- * Created by prakasa on 07/01/16.
- */
-public class Data {
+// Created by prakasa on 07/01/16.
+
+class Data {
 
     private String name;
     private String tahun;
     private String wing;
     private String merk;
     private String image;
-
-    public Data() {
-        // TODO Auto-generated constructor stub
-    }
-
-    public Data(String name, String merk, String image, String tahun, String wing) {
-        super();
-        this.name = name;
-        this.merk = merk;
-        this.tahun = tahun;
-        this.wing = wing;
-        this.image = image;
-    }
-
 
     public String getName() {
         return name;
@@ -33,11 +18,11 @@ public class Data {
         this.name = name;
     }
 
-    public String getMerk() {
+    String getMerk() {
         return merk;
     }
 
-    public void setMerk(String merk) {
+    void setMerk(String merk) {
         this.merk = merk;
     }
 

@@ -21,7 +21,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -43,14 +42,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,45 +58,34 @@ public class Ubah extends AppCompatActivity {
     int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     public String imagepath = null;
 
-    // directory name to store captured images and videos
-    private static final String IMAGE_DIRECTORY_NAME = "SIGMA IPB";
-
     private Uri fileUri; // file url to store image/video
     private static final String GET_URL = "http://172.20.10.4/SigmaIpb/api/get_lokasi";
     private static final String JSON_URL = "http://172.20.10.4/SigmaIpb/api/edit";
-    public ArrayList<String> dataForm = new ArrayList<String>();
+    public ArrayList<String> dataForm = new ArrayList<>();
 
-    private TextView messageText;
     public ImageView imageview;
-    private Button btnAmbilGambar;
-    private Button saveData;
 
     // Post data
     private TextView idData;
     private EditText kodeData, namaData, merkData, tahunData, hargaData, sumberData, latData, longData;
     private Spinner ruangData;
     public String spinnerSelected = null;
-    private long fileSize = 0;
 
     Exif exif;
 
-    /* Key Data From Other Activity */
-    private String key, val, offset = null;
-
     /* Data Spinner */
     JSONArray str_json = null;
-    public List<String> list = new ArrayList<String>();
+    public List<String> list = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ubah);
 
-        messageText  = (TextView)findViewById(R.id.messageText);
         imageview = (ImageView)findViewById(R.id.imgPreview);
 
-        btnAmbilGambar = (Button) findViewById(R.id.btnAmbilGambar);
-        saveData = (Button) findViewById(R.id.saveData);
+        Button btnAmbilGambar = (Button) findViewById(R.id.btnAmbilGambar);
+        Button saveData = (Button) findViewById(R.id.saveData);
 
         idData = (TextView)findViewById(R.id.id_barang);
         kodeData = (EditText)findViewById(R.id.kode_barang);
@@ -117,9 +103,9 @@ public class Ubah extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        offset = getIntent().getStringExtra("offset");
-        key = getIntent().getStringExtra("key");
-        val = getIntent().getStringExtra("text");
+        String offset = getIntent().getStringExtra("offset");
+        String key = getIntent().getStringExtra("key");
+        String val = getIntent().getStringExtra("text");
         if(key == null && val == null)
             new setDataForm().execute("http://172.20.10.4/SigmaIpb/api/get_asset/" + offset +"/1/");
         else
@@ -185,7 +171,7 @@ public class Ubah extends AppCompatActivity {
                                                 if(imagepath == null) imagepath = "false";
                                                 uploadFileToServer(imagepath, JSON_URL, dataForm);
                                                 Context context = Ubah.this;
-                                                Intent intent = null;
+                                                Intent intent;
                                                 intent = new Intent(context, Beranda.class);
                                                 (context).startActivity(intent);
                                             }
@@ -212,7 +198,7 @@ public class Ubah extends AppCompatActivity {
 
             String uri = params[0];
 
-            BufferedReader bufferedReader = null;
+            BufferedReader bufferedReader;
             try {
                 URL url = new URL(uri);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -220,7 +206,7 @@ public class Ubah extends AppCompatActivity {
 
                 bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
-                String json = "";
+                String json;
                 while((json = bufferedReader.readLine())!= null){
                     sb.append(json);
                 }
@@ -236,7 +222,7 @@ public class Ubah extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Boolean result) {
-            if(result == false)
+            if(!result)
                 Toast.makeText(getApplicationContext(), "Unable to fetch data from server", Toast.LENGTH_LONG).show();
             else
                 for(int i = 0; i < str_json.length(); i++){
@@ -249,21 +235,25 @@ public class Ubah extends AppCompatActivity {
 
                     /* SPINNER DATA SELECTED */
                     try {
-                        spinnerSelected = ar.getString("kode_lokasi");
+                        if (ar != null) {
+                            spinnerSelected = ar.getString("kode_lokasi");
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
                     /* Koordinate Creator */
-                    String[] koordinat = null;
+                    String[] koordinat;
                     String LongLat = "";
                     try {
-                        LongLat = ar.getString("koordinat");
+                        if (ar != null) {
+                            LongLat = ar.getString("koordinat");
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     String latitude = ""; String longitude = "";
-                    if( LongLat != "" ){
+                    if(!LongLat.equals("")){
                         koordinat = LongLat.split(",");
                         if(koordinat.length > 1) {
                             if ( koordinat[0] != null )
@@ -275,38 +265,52 @@ public class Ubah extends AppCompatActivity {
                     }
                     /* END:: Koordinate Creator */
                     try {
-                        idData.setText(ar.getString("id_barang"));
+                        if (ar != null) {
+                            idData.setText(ar.getString("id_barang"));
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
                     try {
-                        kodeData.setText(ar.getString("kode_barang"));
+                        if (ar != null) {
+                            kodeData.setText(ar.getString("kode_barang"));
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        namaData.setText(ar.getString("nama_barang"));
+                        if (ar != null) {
+                            namaData.setText(ar.getString("nama_barang"));
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        merkData.setText(ar.getString("merk_type"));
+                        if (ar != null) {
+                            merkData.setText(ar.getString("merk_type"));
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        tahunData.setText(ar.getString("tahun"));
+                        if (ar != null) {
+                            tahunData.setText(ar.getString("tahun"));
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        hargaData.setText(ar.getString("harga_satuan"));
+                        if (ar != null) {
+                            hargaData.setText(ar.getString("harga_satuan"));
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     try {
-                        sumberData.setText(ar.getString("sumber_dana"));
+                        if (ar != null) {
+                            sumberData.setText(ar.getString("sumber_dana"));
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -314,7 +318,9 @@ public class Ubah extends AppCompatActivity {
                     longData.setText(longitude);
 
                     try {
-                        new DownloadImageTask(imageview).execute(ar.getString("foto"));
+                        if (ar != null) {
+                            new DownloadImageTask(imageview).execute(ar.getString("foto"));
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -326,7 +332,7 @@ public class Ubah extends AppCompatActivity {
         class GetListLokasi extends AsyncTask<String, Void, String> {
             private String strValue = null;
 
-            public GetListLokasi (String str0) {
+            GetListLokasi(String str0) {
                 this.strValue = str0;
             }
             @Override
@@ -339,7 +345,7 @@ public class Ubah extends AppCompatActivity {
 
                 String uri = params[0];
 
-                BufferedReader bufferedReader = null;
+                BufferedReader bufferedReader;
                 try {
                     URL url = new URL(uri);
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -347,7 +353,7 @@ public class Ubah extends AppCompatActivity {
 
                     bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
-                    String json = "";
+                    String json;
                     while((json = bufferedReader.readLine())!= null){
                         sb.append(json);
                     }
@@ -369,12 +375,12 @@ public class Ubah extends AppCompatActivity {
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(Ubah.this, android.R.layout.simple_spinner_item, list);
+                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(Ubah.this, android.R.layout.simple_spinner_item, list);
                 dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 ruangData.setAdapter(dataAdapter);
 
-                if ( ! this.strValue.equals(null) ){
-                    ruangData.setSelection(getIndex(ruangData, this.strValue));
+                if (this.strValue == null){
+                    ruangData.setSelection(getIndex(ruangData, null));
                 }
             }
 
@@ -395,7 +401,7 @@ public class Ubah extends AppCompatActivity {
             FileCache fileCache;
             MemoryCache memoryCache = new MemoryCache();
 
-            public DownloadImageTask(ImageView bmImage) {
+            DownloadImageTask(ImageView bmImage) {
                 this.bmImage = bmImage;
                 this.fileCache = new FileCache(Ubah.this);
             }
@@ -414,7 +420,7 @@ public class Ubah extends AppCompatActivity {
                     if(b != null) return b;
                     else {
                         try {
-                            Bitmap bitmap = null;
+                            Bitmap bitmap;
                             URL uri = new URL(urldisplay);
                             HttpURLConnection conn = (HttpURLConnection) uri.openConnection();
                             conn.setConnectTimeout(30000);
@@ -486,9 +492,7 @@ public class Ubah extends AppCompatActivity {
                     stream2.close();
                     return bitmap;
 
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }catch (IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
                 return null;
@@ -498,14 +502,8 @@ public class Ubah extends AppCompatActivity {
 
     // Checking device has camera hardware or not
     private boolean isDeviceSupportCamera() {
-        if (getApplicationContext().getPackageManager().hasSystemFeature(
-                PackageManager.FEATURE_CAMERA)) {
-            // this device has a camera
-            return true;
-        } else {
-            // no camera on this device
-            return false;
-        }
+        return getApplicationContext().getPackageManager().hasSystemFeature(
+                PackageManager.FEATURE_CAMERA);
     }
 
     // Here we store the file url as it will be null after returning from camera app
@@ -561,24 +559,38 @@ public class Ubah extends AppCompatActivity {
                     int num2Lon = (int)Math.floor((gpsTracker.longitude - num1Lon) * 60);
                     double num3Lon = (gpsTracker.longitude - ((double)num1Lon+((double)num2Lon/60))) * 3600000;
 
-                    exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, num1Lat+"/1,"+num2Lat+"/1,"+num3Lat+"/1000");
-                    exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, num1Lon+"/1,"+num2Lon+"/1,"+num3Lon+"/1000");
+                    if (exif != null) {
+                        exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, num1Lat+"/1,"+num2Lat+"/1,"+num3Lat+"/1000");
+                    }
+                    if (exif != null) {
+                        exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, num1Lon+"/1,"+num2Lon+"/1,"+num3Lon+"/1000");
+                    }
 
 
                     if (gpsTracker.latitude > 0) {
-                        exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "N");
+                        if (exif != null) {
+                            exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "N");
+                        }
                     } else {
-                        exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "S");
+                        if (exif != null) {
+                            exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "S");
+                        }
                     }
 
                     if (gpsTracker.longitude > 0) {
-                        exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, "E");
+                        if (exif != null) {
+                            exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, "E");
+                        }
                     } else {
-                        exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, "W");
+                        if (exif != null) {
+                            exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, "W");
+                        }
                     }
 
                     try {
-                        exif.saveAttributes();
+                        if (exif != null) {
+                            exif.saveAttributes();
+                        }
                         Log.e("Nulis Exif", "Tapi Gagal");
                     } catch (IOException e) {
                         Log.e("Ga perlu Nulis Exif", e.toString());
@@ -653,7 +665,9 @@ public class Ubah extends AppCompatActivity {
     private void onCaptureImageResult(Intent data) {
         Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+        if (thumbnail != null) {
+            thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+        }
 
         File destination = new File(Environment.getExternalStorageDirectory(),
                 System.currentTimeMillis() + ".jpg");
@@ -665,8 +679,6 @@ public class Ubah extends AppCompatActivity {
             fo = new FileOutputStream(destination);
             fo.write(bytes.toByteArray());
             fo.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -675,7 +687,7 @@ public class Ubah extends AppCompatActivity {
     }
 
     public static String uploadFileToServer(String filename, String targetUrl, ArrayList<String> dataForm) {
-        String response = "error";
+        String response;
         FileInputStream fileInputStream = null;
 
         String lineEnd = "\r\n";
@@ -684,10 +696,10 @@ public class Ubah extends AppCompatActivity {
 
         int bytesRead, bytesAvailable, bufferSize;
         byte[] buffer;
-        int maxBufferSize = 1 * 1024;
+        int maxBufferSize = 1024;
 
         try {
-            if(filename != "false")
+            if(!filename.equals("false"))
                 fileInputStream = new FileInputStream(new File(filename));
 
             URL url = new URL(targetUrl);
@@ -708,7 +720,7 @@ public class Ubah extends AppCompatActivity {
             DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
             outputStream.writeBytes(twoHyphens + boundary + lineEnd);
 
-            ArrayList<String> keyForm = new ArrayList<String>();
+            ArrayList<String> keyForm = new ArrayList<>();
             keyForm.add("id");
             keyForm.add("kode_barang");
             keyForm.add("nama_barang");
@@ -726,7 +738,6 @@ public class Ubah extends AppCompatActivity {
                 outputStream.writeBytes(lineEnd);
                 outputStream.writeBytes(dataForm.get(i) + lineEnd);
                 outputStream.writeBytes(twoHyphens + boundary + lineEnd);
-                ;
             }
 
             if (fileInputStream != null) {
@@ -772,18 +783,20 @@ public class Ubah extends AppCompatActivity {
             if (serverResponseCode == 200) response = "true";
             else response = "false";
 
-            fileInputStream.close(); outputStream.flush();
+            if (fileInputStream != null) {
+                fileInputStream.close();
+            }
+            outputStream.flush();
 
             connection.getInputStream(); java.io.InputStream is = connection.getInputStream();
 
             int ch;
-            StringBuffer b = new StringBuffer();
+            StringBuilder b = new StringBuilder();
             while( ( ch = is.read() ) != -1 ){
                 b.append( (char)ch );
             }
 
             outputStream.close();
-            outputStream = null;
 
         } catch (Exception ex) {
             // Exception handling

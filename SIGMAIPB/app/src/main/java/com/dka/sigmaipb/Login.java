@@ -21,9 +21,7 @@ import java.util.ArrayList;
 
 import static java.lang.Integer.parseInt;
 
-/**
- * Created by prakasa on 13/10/16.
- */
+// Created by prakasa on 13/10/16.
 public class Login extends AppCompatActivity {
 
     EditText ed1,ed2;
@@ -33,7 +31,7 @@ public class Login extends AppCompatActivity {
     String pesan = null;
 
     private static final String JSON_URL = "http://172.20.10.4/SigmaIpb/api/get_user_id";
-    public ArrayList<String> dataForm = new ArrayList<String>();
+    public ArrayList<String> dataForm = new ArrayList<>();
 
     public static final String MyPREFERENCES = "MyPrefs" ;
     public static final String Userid = "0";
@@ -75,15 +73,15 @@ public class Login extends AppCompatActivity {
                             editor.putString(Userid, serverId);
                             editor.putString(Username, uname);
                             editor.putString(Password, passw);
-                            editor.commit();
+                            editor.apply();
 
                             Context context = Login.this;
-                            Intent intent = null;
+                            Intent intent;
                             intent = new Intent(context, Beranda.class);
                             (context).startActivity(intent);
                         }else{
                             Context context = Login.this;
-                            Intent intent = null;
+                            Intent intent;
                             intent = new Intent(context, Login.class);
                             intent.putExtra("pesan", "Maaf Username Password Salah");
                             (context).startActivity(intent);
@@ -96,8 +94,8 @@ public class Login extends AppCompatActivity {
     }
 
     public static String uploadFileToServer(String targetUrl, ArrayList<String> dataForm) {
-        String content = null; String result = "";
-        StringBuffer sb = new StringBuffer();
+        String content; String result;
+        StringBuilder sb = new StringBuilder();
 
         String lineEnd = "\r\n";
         String twoHyphens = "--";
@@ -122,7 +120,7 @@ public class Login extends AppCompatActivity {
                 DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
                 outputStream.writeBytes(twoHyphens + boundary + lineEnd);
 
-                ArrayList<String> keyForm = new ArrayList<String>();
+                ArrayList<String> keyForm = new ArrayList<>();
                 keyForm.add("username");
                 keyForm.add("password");
                 for (int i = 0; i < keyForm.size(); i++) {

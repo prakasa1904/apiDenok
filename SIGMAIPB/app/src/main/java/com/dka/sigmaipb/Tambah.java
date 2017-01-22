@@ -36,7 +36,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -53,19 +52,14 @@ public class Tambah extends AppCompatActivity{
     int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     public String imagepath = null;
 
-    // directory name to store captured images and videos
-    private static final String IMAGE_DIRECTORY_NAME = "SIGMA IPB";
-
     private Uri fileUri; // file url to store image/video
     private static final String GET_URL = "http://172.20.10.4/SigmaIpb/api/get_lokasi";
     private static final String JSON_URL = "http://172.20.10.4/SigmaIpb/api/add";
-    public ArrayList<String> dataForm = new ArrayList<String>();
+    public ArrayList<String> dataForm = new ArrayList<>();
 
     Spinner sp;
     private TextView textLat, textLon;
     public ImageView imageview;
-    private Button btnAmbilGambar;
-    private Button saveData;
 
     // Post data
     public EditText idData, namaData, merkData, tahunData, hargaData, sumberData, latData, longData;
@@ -75,7 +69,7 @@ public class Tambah extends AppCompatActivity{
 
     /* Data Spinner */
     JSONArray str_json = null;
-    public List<String> list = new ArrayList<String>();
+    public List<String> list = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,8 +79,8 @@ public class Tambah extends AppCompatActivity{
         imageview = (ImageView)findViewById(R.id.imgPreview);
 
         sp = (Spinner) findViewById(R.id.ruangan);
-        btnAmbilGambar = (Button) findViewById(R.id.btnAmbilGambar);
-        saveData = (Button) findViewById(R.id.saveData);
+        Button btnAmbilGambar = (Button) findViewById(R.id.btnAmbilGambar);
+        Button saveData = (Button) findViewById(R.id.saveData);
 
         textLat  = (TextView)findViewById(R.id.latitude);
         //textlat.setEnabled(false);
@@ -166,7 +160,7 @@ public class Tambah extends AppCompatActivity{
                                                 if (imagepath == null) imagepath = "false";
                                                 uploadFileToServer(imagepath, JSON_URL, dataForm);
                                                 Context context = Tambah.this;
-                                                Intent intent = null;
+                                                Intent intent;
                                                 intent = new Intent(context, Beranda.class);
                                                 (context).startActivity(intent);
                                             }
@@ -181,14 +175,8 @@ public class Tambah extends AppCompatActivity{
 
     // Checking device has camera hardware or not
     private boolean isDeviceSupportCamera() {
-        if (getApplicationContext().getPackageManager().hasSystemFeature(
-                PackageManager.FEATURE_CAMERA)) {
-            // this device has a camera
-            return true;
-        } else {
-            // no camera on this device
-            return false;
-        }
+        return getApplicationContext().getPackageManager().hasSystemFeature(
+                PackageManager.FEATURE_CAMERA);
     }
 
     // Here we store the file url as it will be null after returning from camera app
@@ -244,24 +232,38 @@ public class Tambah extends AppCompatActivity{
                     int num2Lon = (int)Math.floor((gpsTracker.longitude - num1Lon) * 60);
                     double num3Lon = (gpsTracker.longitude - ((double)num1Lon+((double)num2Lon/60))) * 3600000;
 
-                    exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, num1Lat+"/1,"+num2Lat+"/1,"+num3Lat+"/1000");
-                    exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, num1Lon+"/1,"+num2Lon+"/1,"+num3Lon+"/1000");
+                    if (exif != null) {
+                        exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, num1Lat+"/1,"+num2Lat+"/1,"+num3Lat+"/1000");
+                    }
+                    if (exif != null) {
+                        exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, num1Lon+"/1,"+num2Lon+"/1,"+num3Lon+"/1000");
+                    }
 
 
                     if (gpsTracker.latitude > 0) {
-                        exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "N");
+                        if (exif != null) {
+                            exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "N");
+                        }
                     } else {
-                        exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "S");
+                        if (exif != null) {
+                            exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "S");
+                        }
                     }
 
                     if (gpsTracker.longitude > 0) {
-                        exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, "E");
+                        if (exif != null) {
+                            exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, "E");
+                        }
                     } else {
-                        exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, "W");
+                        if (exif != null) {
+                            exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, "W");
+                        }
                     }
 
                     try {
-                        exif.saveAttributes();
+                        if (exif != null) {
+                            exif.saveAttributes();
+                        }
                         Log.e("Nulis Exif", "Tapi Gagal");
                     } catch (IOException e) {
                         Log.e("Ga perlu Nulis Exif", e.toString());
@@ -347,12 +349,12 @@ public class Tambah extends AppCompatActivity{
         try {
             image.createNewFile();
             fo = new FileOutputStream(image);
-            thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, fo);
+            if (thumbnail != null) {
+                thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, fo);
+            }
             fo.write(bytes.toByteArray());
             fo.close();
             imagepath = image.getAbsolutePath();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -361,7 +363,7 @@ public class Tambah extends AppCompatActivity{
     }
 
     public static String uploadFileToServer(String filename, String targetUrl, ArrayList<String> dataForm) {
-        String response = "error";
+        String response;
         FileInputStream fileInputStream = null;
 
         String lineEnd = "\r\n";
@@ -370,10 +372,10 @@ public class Tambah extends AppCompatActivity{
 
         int bytesRead, bytesAvailable, bufferSize;
         byte[] buffer;
-        int maxBufferSize = 1 * 1024;
+        int maxBufferSize = 1024;
 
         try {
-            if(filename != "false")
+            if(!filename.equals("false"))
                 fileInputStream = new FileInputStream(new File(filename));
 
             URL url = new URL(targetUrl);
@@ -394,7 +396,7 @@ public class Tambah extends AppCompatActivity{
             DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
             outputStream.writeBytes(twoHyphens + boundary + lineEnd);
 
-            ArrayList<String> keyForm = new ArrayList<String>();
+            ArrayList<String> keyForm = new ArrayList<>();
             keyForm.add("kode_barang");
             keyForm.add("nama_barang");
             keyForm.add("merk_type");
@@ -411,7 +413,6 @@ public class Tambah extends AppCompatActivity{
                 outputStream.writeBytes(lineEnd);
                 outputStream.writeBytes(dataForm.get(i) + lineEnd);
                 outputStream.writeBytes(twoHyphens + boundary + lineEnd);
-                ;
             }
 
             if (fileInputStream != null) {
@@ -457,19 +458,21 @@ public class Tambah extends AppCompatActivity{
             if (serverResponseCode == 200) response = "true";
             else response = "false";
 
-            fileInputStream.close(); outputStream.flush();
+            if (fileInputStream != null) {
+                fileInputStream.close();
+            }
+            outputStream.flush();
 
             connection.getInputStream(); java.io.InputStream is = connection.getInputStream();
 
             int ch;
-            StringBuffer b = new StringBuffer();
+            StringBuilder b = new StringBuilder();
             while( ( ch = is.read() ) != -1 ){
                 b.append( (char)ch );
             }
 
 
             outputStream.close();
-            outputStream = null;
 
         } catch (Exception ex) {
             // Exception handling
@@ -493,7 +496,7 @@ public class Tambah extends AppCompatActivity{
 
                 String uri = params[0];
 
-                BufferedReader bufferedReader = null;
+                BufferedReader bufferedReader;
                 try {
                     URL url = new URL(uri);
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -501,7 +504,7 @@ public class Tambah extends AppCompatActivity{
 
                     bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
-                    String json = "";
+                    String json;
                     while((json = bufferedReader.readLine())!= null){
                         sb.append(json);
                     }
@@ -524,7 +527,7 @@ public class Tambah extends AppCompatActivity{
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
                 Spinner sp = (Spinner) findViewById(R.id.ruangan);
-                ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(Tambah.this, android.R.layout.simple_spinner_item, list);
+                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(Tambah.this, android.R.layout.simple_spinner_item, list);
                 dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 sp.setAdapter(dataAdapter);
             }

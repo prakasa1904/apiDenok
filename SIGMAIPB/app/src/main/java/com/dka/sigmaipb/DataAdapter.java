@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,6 @@ import com.dka.sigmaipb.cache.Utils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,18 +26,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-/* Internal Libs */
+// Created by prakasa on 07/01/16.
 
-/**
- * Created by prakasa on 07/01/16.
- */
-public class DataAdapter extends ArrayAdapter<Data>{
-    ArrayList<Data> dataList;
-    LayoutInflater vi;
-    int Resource;
-    ViewHolder holder;
+class DataAdapter extends ArrayAdapter<Data>{
+    private ArrayList<Data> dataList;
+    private LayoutInflater vi;
+    private int Resource;
 
-    public DataAdapter(Context context, int resource, ArrayList<Data> objects) {
+    DataAdapter(Context context, int resource, ArrayList<Data> objects) {
         super(context, resource, objects);
         vi = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -45,10 +41,12 @@ public class DataAdapter extends ArrayAdapter<Data>{
         dataList = objects;
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         // convert view = design
         View v = convertView;
+        ViewHolder holder;
         if (v == null) {
             holder = new ViewHolder();
             v = vi.inflate(Resource, null);
@@ -72,12 +70,12 @@ public class DataAdapter extends ArrayAdapter<Data>{
         return v;
     }
 
-    static class ViewHolder {
+    private static class ViewHolder {
         public ImageView imageview;
-        public TextView namaBarang;
+        TextView namaBarang;
         public TextView tahun;
         public TextView wing;
-        public TextView merkType;
+        TextView merkType;
 
     }
 
@@ -86,7 +84,7 @@ public class DataAdapter extends ArrayAdapter<Data>{
         FileCache fileCache;
         MemoryCache memoryCache = new MemoryCache();
 
-        public DownloadImageTask(ImageView bmImage) {
+        DownloadImageTask(ImageView bmImage) {
             this.bmImage = bmImage;
             this.fileCache = new FileCache(getContext());
         }
@@ -105,7 +103,7 @@ public class DataAdapter extends ArrayAdapter<Data>{
                 if(b != null) return b;
                 else {
                     try {
-                        Bitmap bitmap = null;
+                        Bitmap bitmap;
                         URL uri = new URL(urldisplay);
                         HttpURLConnection conn = (HttpURLConnection) uri.openConnection();
                         conn.setConnectTimeout(30000);
@@ -175,9 +173,7 @@ public class DataAdapter extends ArrayAdapter<Data>{
                 stream2.close();
                 return bitmap;
 
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }catch (IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             return null;

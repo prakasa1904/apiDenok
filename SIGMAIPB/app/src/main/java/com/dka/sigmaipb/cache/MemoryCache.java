@@ -8,9 +8,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * Created by prakasa on 16/01/16.
- */
+// Created by prakasa on 16/01/16.
 public class MemoryCache {
     private static final String TAG = "MemoryCache";
 
@@ -30,7 +28,7 @@ public class MemoryCache {
         setLimit(Runtime.getRuntime().maxMemory()/4);
     }
 
-    public void setLimit(long new_limit){
+    private void setLimit(long new_limit){
 
         limit=new_limit;
         Log.i(TAG, "MemoryCache will use up to " + limit / 1024. / 1024. + "MB");
@@ -79,17 +77,7 @@ public class MemoryCache {
         }
     }
 
-    public void clear(){
-        try{
-            // Clear cache
-            cache.clear();
-            size=0;
-        }catch(NullPointerException ex){
-            ex.printStackTrace();
-        }
-    }
-
-    long getSizeInBytes(Bitmap bitmap) {
+    private long getSizeInBytes(Bitmap bitmap) {
         if(bitmap==null)
             return 0;
         return bitmap.getRowBytes() * bitmap.getHeight();

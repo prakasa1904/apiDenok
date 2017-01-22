@@ -34,7 +34,7 @@ public class Hasilpencarian extends AppCompatActivity{
     static String in_foto = "foto";
     JSONArray str_json = null;
 
-    ArrayList<Data>  dataList = new ArrayList<Data>();
+    ArrayList<Data>  dataList = new ArrayList<>();
     DataAdapter adapter; ListView listview;
 
     @Override
@@ -120,7 +120,7 @@ public class Hasilpencarian extends AppCompatActivity{
 
             String uri = params[0];
 
-            BufferedReader bufferedReader = null;
+            BufferedReader bufferedReader;
             try {
                 URL url = new URL(uri);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -128,7 +128,7 @@ public class Hasilpencarian extends AppCompatActivity{
 
                 bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
-                String json = "";
+                String json;
                 while((json = bufferedReader.readLine())!= null){
                     sb.append(json);
                 }
@@ -164,7 +164,7 @@ public class Hasilpencarian extends AppCompatActivity{
                 }
             });
 
-            if(result == false)
+            if(!result)
                 Toast.makeText(getApplicationContext(), "Unable to fetch data from server", Toast.LENGTH_LONG).show();
         }
     }

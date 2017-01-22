@@ -4,9 +4,7 @@ import android.content.Context;
 
 import java.io.File;
 
-/**
- * Created by prakasa on 16/01/16.
- */
+// Created by prakasa on 16/01/16.
 public class FileCache {
     private File cacheDir;
 
@@ -37,18 +35,8 @@ public class FileCache {
         //Identify images by hashcode or encode by URLEncoder.encode.
         String filename=String.valueOf(url.hashCode());
 
-        File f = new File(cacheDir, filename);
-        return f;
+        return new File(cacheDir, filename);
 
     }
 
-    public void clear(){
-        // list all files inside cache directory
-        File[] files=cacheDir.listFiles();
-        if(files==null)
-            return;
-        //delete all cache directory files
-        for(File f:files)
-            f.delete();
-    }
 }

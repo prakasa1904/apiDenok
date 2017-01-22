@@ -3,9 +3,7 @@ package com.dka.sigmaipb.cache;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-/**
- * Created by prakasa on 16/01/16.
- */
+// Created by prakasa on 16/01/16.
 public class Utils {
     public static void CopyStream(InputStream is, OutputStream os)
     {
@@ -26,6 +24,6 @@ public class Utils {
                 os.write(bytes, 0, count);
             }
         }
-        catch(Exception ex){}
+        catch(Exception ignored){}
     }
 }

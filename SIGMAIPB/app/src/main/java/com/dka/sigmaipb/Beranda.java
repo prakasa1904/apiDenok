@@ -14,9 +14,6 @@ import android.widget.Button;
 
 public class Beranda extends AppCompatActivity {
 
-    private Button btnTambah;
-    private Button btnPencarian;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +35,7 @@ public class Beranda extends AppCompatActivity {
                 SharedPreferences prefs = getSharedPreferences("IPB", 0);
                 boolean hasCode = prefs.getBoolean("HAS_CODE", false);
                 Context context = Beranda.this;
-                Intent intent = null;
+                Intent intent;
 
                 if(!hasCode){
                     intent = new Intent(context, Tambah.class);

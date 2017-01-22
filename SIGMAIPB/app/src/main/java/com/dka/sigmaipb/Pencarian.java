@@ -44,7 +44,7 @@ public class Pencarian extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pencarian);
 
-        dataList = new ArrayList<Data>();
+        dataList = new ArrayList<>();
         new getJSON().execute("http://172.20.10.4/SigmaIpb/api/get_asset/1/10/");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -66,12 +66,12 @@ public class Pencarian extends AppCompatActivity{
         this.addListenerOnButton();
 
         /* Proses pencarian */
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         Spinner sp = (Spinner) findViewById(R.id.pencarian);
         list.add("Nama Barang");
         list.add("Merk Type");
         list.add("Tahun");
-        ArrayAdapter<String> spadapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
+        ArrayAdapter<String> spadapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, list);
         spadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp.setAdapter(spadapter);
 
@@ -134,7 +134,7 @@ public class Pencarian extends AppCompatActivity{
 
             String uri = params[0];
 
-            BufferedReader bufferedReader = null;
+            BufferedReader bufferedReader;
             try {
                 URL url = new URL(uri);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -142,7 +142,7 @@ public class Pencarian extends AppCompatActivity{
 
                 bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
-                String json = "";
+                String json;
                 while((json = bufferedReader.readLine())!= null){
                     sb.append(json);
                 }
@@ -169,7 +169,7 @@ public class Pencarian extends AppCompatActivity{
         @Override
         protected void onPostExecute(Boolean result) {
             loading.dismiss(); loading = null;
-            if(result == false)
+            if(!result)
                 Toast.makeText(getApplicationContext(), "Unable to fetch data from server", Toast.LENGTH_LONG).show();
         }
     }

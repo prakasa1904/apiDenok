@@ -45,7 +45,7 @@ public class PetaHasilPencarian extends AppCompatActivity {
     View vmap;
 
     private GoogleMap mMap;
-    private ArrayList<MyMarker> mMyMarkersArray = new ArrayList<MyMarker>();
+    private ArrayList<MyMarker> mMyMarkersArray = new ArrayList<>();
     private HashMap<Marker, MyMarker> mMarkersHashMap;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -71,7 +71,7 @@ public class PetaHasilPencarian extends AppCompatActivity {
         wingLabel = (TextView) vmap.findViewById(R.id.wing);
 
         // Initialize the HashMap for Markers and MyMarker object
-        mMarkersHashMap = new HashMap<Marker, MyMarker>();
+        mMarkersHashMap = new HashMap<>();
 
         key = getIntent().getStringExtra("key").toLowerCase().replace(" ", "_");
         val = getIntent().getStringExtra("text");
@@ -87,7 +87,7 @@ public class PetaHasilPencarian extends AppCompatActivity {
         FloatingActionButton button1 = (FloatingActionButton) findViewById(R.id.toEdite);
         button1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                String sentKey, sentVal = null;
+                String sentKey, sentVal;
                 sentKey = key;
                 sentVal = val;
                 Intent myIntent = new Intent(view.getContext(), Hasilpencarian.class);
@@ -152,7 +152,7 @@ public class PetaHasilPencarian extends AppCompatActivity {
 
             String uri = params[0];
 
-            BufferedReader bufferedReader = null;
+            BufferedReader bufferedReader;
             try {
                 URL url = new URL(uri);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -160,7 +160,7 @@ public class PetaHasilPencarian extends AppCompatActivity {
 
                 bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
-                String json = "";
+                String json;
                 while ((json = bufferedReader.readLine()) != null) {
                     sb.append(json);
                 }
@@ -176,7 +176,7 @@ public class PetaHasilPencarian extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Boolean result) {
-            if (result == false)
+            if (!result)
                 Toast.makeText(getApplicationContext(), "Unable to fetch data from server", Toast.LENGTH_LONG).show();
             else {
                 for (int i = 0; i < str_json.length(); i++) {
@@ -188,36 +188,38 @@ public class PetaHasilPencarian extends AppCompatActivity {
                     }
 
                     try {
-                        if (ar.getString("koordinat").length() > 0) {
-                            /* Koordinate Creator */
-                            String[] koordinat = null;
-                            String LongLat = "";
-                            try {
-                                LongLat = ar.getString("koordinat");
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            String latitude = "";
-                            String longitude = "";
-                            if (LongLat != "") {
-                                koordinat = LongLat.split(",");
-                                if (koordinat.length > 1) {
-                                    if (koordinat[0] != null)
-                                        latitude = koordinat[0].replace("(", "");
-
-                                    if (koordinat[1] != null)
-                                        longitude = koordinat[1].replace(")", "");
+                        if (ar != null) {
+                            if (ar.getString("koordinat").length() > 0) {
+                                /* Koordinate Creator */
+                                String[] koordinat;
+                                String LongLat = null;
+                                try {
+                                    LongLat = ar.getString("koordinat");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
                                 }
-                            }
-                            /* END:: Koordinate Creator */
-                            if (latitude.length() > 0 && longitude.length() > 0) {
-                                Log.e("Ada Data ", latitude + " === " + longitude);
-                                mMyMarkersArray.add(new MyMarker(PetaHasilPencarian.this, markerIcon, ar.getString("nama_barang"), ar.getString("kode_lokasi"), ar.getString("foto"), Double.parseDouble(longitude), Double.parseDouble(latitude), ar.getString("tahun"), ar.getString("wing")));
+                                String latitude = "";
+                                String longitude = "";
+                                if (LongLat != null) {
+                                    koordinat = LongLat.split(",");
+                                    if (koordinat.length > 1) {
+                                        if (koordinat[0] != null)
+                                            latitude = koordinat[0].replace("(", "");
+
+                                        if (koordinat[1] != null)
+                                            longitude = koordinat[1].replace(")", "");
+                                    }
+                                }
+                                /* END:: Koordinate Creator */
+                                if (latitude.length() > 0 && longitude.length() > 0) {
+                                    Log.e("Ada Data ", latitude + " === " + longitude);
+                                    mMyMarkersArray.add(new MyMarker(PetaHasilPencarian.this, markerIcon, ar.getString("nama_barang"), ar.getString("kode_lokasi"), ar.getString("foto"), Double.parseDouble(longitude), Double.parseDouble(latitude), ar.getString("tahun"), ar.getString("wing")));
+                                } else {
+                                    Log.e("Tidak Ada Data ", " Long Lat");
+                                }
                             } else {
                                 Log.e("Tidak Ada Data ", " Long Lat");
                             }
-                        } else {
-                            Log.e("Tidak Ada Data ", " Long Lat");
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -270,7 +272,7 @@ public class PetaHasilPencarian extends AppCompatActivity {
     }
 
     public class MarkerInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
-        public MarkerInfoWindowAdapter() {
+        MarkerInfoWindowAdapter() {
         }
 
         @Override
