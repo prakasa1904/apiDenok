@@ -252,7 +252,7 @@
 			$this->db->select('*');
 			$this->db->from('tbl_aset');
 			if($search_string){
-				$this->db->like('nama_barang', $search_string);
+				$this->db->like('LOWER(nama_barang)', strtolower($search_string));
 			}
 			if($order){
 				$this->db->order_by($order, 'Asc');
