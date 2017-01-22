@@ -70,7 +70,7 @@
         <activity
             android:name=".PetaHasilPencarian"
             android:label="@string/title_activity_peta_hasil_pencarian"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <!-- Google API Key -->
         <meta-data
